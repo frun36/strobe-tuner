@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use tuner::Tuner;
 use wheel::Wheel;
 
@@ -19,6 +17,6 @@ fn main() {
 
     let canvas = window.into_canvas().build().unwrap();
 
-    let mut tuner = Tuner::new(60., 8000, Wheel::new(400, 300, 200, 8, 0., 4.));
+    let mut tuner = Tuner::new(24., 8000, Wheel::new(400, 300, 200, 8, 0., 20_f64));
     tuner.run(sdl_context, canvas).unwrap();
 }

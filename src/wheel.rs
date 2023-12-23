@@ -35,7 +35,7 @@ impl Wheel {
 
     pub fn update_position(&mut self, time: Duration) {
         // println!("Time: {:?}", time);
-        let omega = 2. * PI * self.freq;
+        let omega = 2. * PI * self.freq / self.holes as f64;
         self.offset += omega * time.as_secs_f64();
         while self.offset > 2. * PI {
             self.offset -= 2. * PI;
@@ -44,6 +44,10 @@ impl Wheel {
 
     pub fn get_freq(&self) -> f64 {
         self.freq
+    }
+
+    pub fn set_freq(&mut self, freq: f64) {
+        self.freq = freq;
     }
 }
 
@@ -68,7 +72,7 @@ impl WheelRenderer for Canvas<Window> {
         let angle = 2. * PI / (wheel.holes as f64);
 
         for i in 0..(wheel.holes) {
-            let curr_angle = angle * i as f64 + wheel.offset;
+            let curr_angle = angle * i as f64 - wheel.offset;
             let relative_x = (wheel.rad - wheel.hole_rad * 2) as f64 * curr_angle.cos();
             let relative_y = (wheel.rad - wheel.hole_rad * 2) as f64 * curr_angle.sin();
             mask_canvas.filled_circle(
