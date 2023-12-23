@@ -34,6 +34,7 @@ impl Wheel {
     }
 
     pub fn update_position(&mut self, time: Duration) {
+        // println!("Time: {:?}", time);
         let omega = 2. * PI * self.freq;
         self.offset += omega * time.as_secs_f64();
         while self.offset > 2. * PI {
@@ -48,7 +49,7 @@ pub trait WheelRenderer {
 
 impl WheelRenderer for Canvas<Window> {
     fn wheel(&mut self, wheel: Wheel) -> Result<(), String> {
-        println!("Offset: {}", wheel.offset);
+        // println!("Offset: {}", wheel.offset);
 
         let mut mask_surface = Surface::new(
             2 * wheel.rad as u32,
