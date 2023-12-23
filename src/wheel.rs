@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+use std::{f64::consts::PI, time::Duration};
 
 use sdl2::{
     gfx::primitives::DrawRenderer,
@@ -17,10 +17,11 @@ pub struct Wheel {
     holes: u8,
     hole_rad: i16,
     offset: f64,
+    freq: f64,
 }
 
 impl Wheel {
-    pub fn new(x: i16, y: i16, rad: i16, holes: u8, offset: f64) -> Self {
+    pub fn new(x: i16, y: i16, rad: i16, holes: u8, offset: f64, freq: f64) -> Self {
         Self {
             x,
             y,
@@ -28,6 +29,15 @@ impl Wheel {
             holes,
             hole_rad: rad / holes as i16,
             offset,
+            freq,
+        }
+    }
+
+    pub fn update_position(&mut self, time: Duration) {
+        let omega = 2. * PI * self.freq;
+        self.offset += omega * time.as_secs_f64();
+        while self.offset > 2. * PI {
+            self.offset -= 2. * PI;
         }
     }
 }
@@ -38,6 +48,8 @@ pub trait WheelRenderer {
 
 impl WheelRenderer for Canvas<Window> {
     fn wheel(&mut self, wheel: Wheel) -> Result<(), String> {
+        println!("Offset: {}", wheel.offset);
+
         let mut mask_surface = Surface::new(
             2 * wheel.rad as u32,
             2 * wheel.rad as u32,
