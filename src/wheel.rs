@@ -2,8 +2,11 @@ use std::f64::consts::PI;
 
 use sdl2::{
     gfx::primitives::DrawRenderer,
-    pixels::Color,
-    render::{Canvas, RenderTarget},
+    pixels::{Color, PixelFormatEnum},
+    rect::Rect,
+    render::{BlendMode, Canvas},
+    surface::Surface,
+    video::Window,
 };
 
 #[derive(Clone, Copy)]
@@ -30,15 +33,20 @@ impl Wheel {
 }
 
 pub trait WheelRenderer {
-    fn wheel(&self, wheel: Wheel) -> Result<(), String>;
+    fn wheel(&mut self, wheel: Wheel) -> Result<(), String>;
 }
 
-impl<T> WheelRenderer for Canvas<T>
-where
-    T: RenderTarget,
-{
-    fn wheel(&self, wheel: Wheel) -> Result<(), String> {
-        self.filled_circle(wheel.x, wheel.y, wheel.rad, Color::RGB(0, 0, 0))?;
+impl WheelRenderer for Canvas<Window> {
+    fn wheel(&mut self, wheel: Wheel) -> Result<(), String> {
+        let mut mask_surface = Surface::new(
+            2 * wheel.rad as u32,
+            2 * wheel.rad as u32,
+            PixelFormatEnum::RGBA32,
+        )?;
+        mask_surface.set_blend_mode(BlendMode::Blend)?;
+        let mask_canvas = mask_surface.into_canvas()?;
+
+        mask_canvas.filled_circle(wheel.rad, wheel.rad, wheel.rad, Color::RGB(0, 0, 0))?;
 
         let angle = 2. * PI / (wheel.holes as f64);
 
@@ -46,13 +54,31 @@ where
             let curr_angle = angle * i as f64 + wheel.offset;
             let relative_x = (wheel.rad - wheel.hole_rad * 2) as f64 * curr_angle.cos();
             let relative_y = (wheel.rad - wheel.hole_rad * 2) as f64 * curr_angle.sin();
-            self.filled_circle(
-                wheel.x + relative_x as i16,
-                wheel.y + relative_y as i16,
+            mask_canvas.filled_circle(
+                wheel.rad + relative_x as i16,
+                wheel.rad + relative_y as i16,
                 wheel.hole_rad,
                 Color::RGB(255, 255, 255),
             )?;
         }
+
+        let texture_creator = self.texture_creator();
+        let mut mask_texture = texture_creator
+            .create_texture_from_surface(mask_canvas.surface())
+            .unwrap();
+
+        mask_texture.set_blend_mode(BlendMode::Mul);
+        self.copy(
+            &mask_texture,
+            None,
+            Rect::new(
+                wheel.x as i32 - wheel.rad as i32,
+                wheel.y as i32 - wheel.rad as i32,
+                (wheel.rad * 2) as u32,
+                (wheel.rad * 2) as u32,
+            ),
+        )?;
+
         Ok(())
     }
 }

@@ -14,11 +14,11 @@ fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
-    canvas.set_draw_color(Color::RGB(255, 255, 255));
+    canvas.set_draw_color(Color::RGB(255, 154, 0));
     canvas.clear();
     canvas.wheel(Wheel::new(400, 300, 200, 8, 0.)).unwrap();
     canvas.present();
-    
+
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     'app: loop {
