@@ -1,4 +1,8 @@
 use sdl2::{pixels::Color, event::Event, keyboard::Keycode};
+use wheel::{WheelRenderer, Wheel};
+
+mod wheel;
+mod tuner;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -10,8 +14,9 @@ fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
-    canvas.set_draw_color(Color::RGB(0, 0, 0));
+    canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
+    canvas.wheel(Wheel::new(400, 300, 200, 8, 0.)).unwrap();
     canvas.present();
     
     let mut event_pump = sdl_context.event_pump().unwrap();
