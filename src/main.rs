@@ -1,6 +1,9 @@
+use std::time::Duration;
+
 use tuner::Tuner;
 use wheel::Wheel;
 
+mod audio;
 mod tuner;
 mod wheel;
 
@@ -16,6 +19,6 @@ fn main() {
 
     let canvas = window.into_canvas().build().unwrap();
 
-    let mut tuner = Tuner::new(60., Wheel::new(400, 300, 200, 8, 0., 0.5));
+    let mut tuner = Tuner::new(60., 8000, Wheel::new(400, 300, 200, 8, 0., 4.));
     tuner.run(sdl_context, canvas).unwrap();
 }

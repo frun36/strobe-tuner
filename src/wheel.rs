@@ -41,6 +41,10 @@ impl Wheel {
             self.offset -= 2. * PI;
         }
     }
+
+    pub fn get_freq(&self) -> f64 {
+        self.freq
+    }
 }
 
 pub trait WheelRenderer {
