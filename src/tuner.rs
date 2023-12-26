@@ -4,15 +4,15 @@ use sdl2::{event::Event, keyboard::Keycode, pixels::Color, render::Canvas, video
 
 use crate::wheel::{Wheel, WheelRenderer};
 
-pub struct Tuner {
+pub struct Tuner<'a> {
     fps: f64,
     sample_rate: u16,
     time_between_frames: Duration,
-    wheel: Wheel,
+    wheel: Wheel<'a>,
 }
 
-impl Tuner {
-    pub fn new(fps: f64, sample_rate: u16, wheel: Wheel) -> Self {
+impl<'a> Tuner<'a> {
+    pub fn new(fps: f64, sample_rate: u16, wheel: Wheel<'a>) -> Self {
         Self {
             fps,
             sample_rate,
@@ -32,7 +32,7 @@ impl Tuner {
 
         canvas.set_draw_color(Color::RGB(255, 154, 0));
         canvas.clear();
-        canvas.wheel(self.wheel)?;
+        canvas.wheel(&self.wheel)?;
         canvas.present();
 
         let mut prev_instant;
@@ -49,17 +49,17 @@ impl Tuner {
                 * self.sample_rate as f64) as usize;
             canvas.set_draw_color(Color::RGB(
                 (255.
-                    * if wave[index] as f64 / i16::MAX as f64 > 0.85 {
+                    * if wave[index].abs() as f64 / i16::MAX as f64 > 0.85 {
                         1.
                     } else {
-                        0.
+                        1.
                     }) as u8,
                 0,
                 0,
             ));
 
             canvas.clear();
-            canvas.wheel(self.wheel)?;
+            canvas.wheel(&self.wheel)?;
             canvas.present();
 
             for event in event_pump.poll_iter() {
@@ -89,7 +89,7 @@ impl Tuner {
 
             let sleep = self.time_between_frames - Instant::now().duration_since(instant);
             std::thread::sleep(sleep);
-            // println!("{:?}", self.time_between_frames - sleep);
+            println!("{:?}", self.time_between_frames - sleep);
         }
 
         Ok(())

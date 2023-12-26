@@ -16,7 +16,9 @@ fn main() {
         .unwrap();
 
     let canvas = window.into_canvas().build().unwrap();
+    let texture_creator = canvas.texture_creator();
+    let wheel = Wheel::new(&texture_creator, 400, 300, 200, 0.2_f64).unwrap();
 
-    let mut tuner = Tuner::new(24., 8000, Wheel::new(400, 300, 200, 8, 0., 20_f64));
+    let mut tuner = Tuner::new(60., 8000, wheel);
     tuner.run(sdl_context, canvas).unwrap();
 }
