@@ -1,4 +1,4 @@
-use std::{f64::consts::PI, time::Duration};
+use std::time::Instant;
 
 use sdl2::{
     rect::Rect,
@@ -11,7 +11,9 @@ pub struct Wheel<'a> {
     y: i16,
     rad: i16,
     position: f64,
+    curr_time: Instant,
     freq: f64,
+    omega: f64,
     texture: Texture <'a>
 }
 
@@ -24,18 +26,20 @@ impl<'a> Wheel<'a> {
             y,
             rad,
             position: 0.,
+            curr_time: Instant::now(),
             freq,
+            omega: 360. * freq,
             texture,
         })
     }
 
-    pub fn update_position(&mut self, time: Duration) {
+    pub fn update_position(&mut self, time: Instant) {
         // println!("Time: {:?}", time);
-        let omega = 360. * self.freq;
-        self.position += omega * time.as_secs_f64();
-        // while self.position > 2. * PI {
-        //     self.position -= 2. * PI;
-        // }
+        self.position += self.omega * time.duration_since(self.curr_time).as_secs_f64();
+        while self.position > 360. {
+            self.position -= 360.;
+        }
+        self.curr_time = time;
     }
 
     pub fn get_freq(&self) -> f64 {
@@ -44,6 +48,7 @@ impl<'a> Wheel<'a> {
 
     pub fn set_freq(&mut self, freq: f64) {
         self.freq = freq;
+        self.omega = 360. * freq;
     }
 }
 

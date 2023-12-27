@@ -1,22 +1,29 @@
 use std::time::{Duration, Instant};
 
-use sdl2::{event::Event, keyboard::Keycode, pixels::Color, render::Canvas, video::Window, Sdl};
+use sdl2::{event::Event, keyboard::Keycode, pixels::Color, render::Canvas, video::Window, Sdl, EventPump};
 
 use crate::wheel::{Wheel, WheelRenderer};
 
+
 pub struct Tuner<'a> {
     fps: f64,
+    subframes: u32,
     sample_rate: u16,
     time_between_frames: Duration,
+    time_between_subframes: Duration,
+    jump: usize,
     wheel: Wheel<'a>,
 }
 
 impl<'a> Tuner<'a> {
-    pub fn new(fps: f64, sample_rate: u16, wheel: Wheel<'a>) -> Self {
+    pub fn new(fps: f64, subframes: u32, sample_rate: u16, wheel: Wheel<'a>) -> Self {
         Self {
             fps,
+            subframes,
             sample_rate,
             time_between_frames: Duration::from_secs_f64(1. / fps),
+            time_between_subframes: Duration::from_secs_f64(1. / (fps * subframes as f64)),
+            jump: (sample_rate as f64 / (fps * subframes as f64)) as usize,
             wheel,
         }
     }
@@ -30,33 +37,25 @@ impl<'a> Tuner<'a> {
             Duration::from_secs(60),
         );
 
-        canvas.set_draw_color(Color::RGB(255, 154, 0));
-        canvas.clear();
-        canvas.wheel(&self.wheel)?;
-        canvas.present();
-
-        let mut prev_instant;
-        let mut instant = Instant::now();
         let mut index = 0;
-
         'running: loop {
-            prev_instant = instant;
-            instant = Instant::now();
-            self.wheel
-                .update_position(instant.duration_since(prev_instant));
+            let frame_begin = Instant::now();
 
-            index += (Instant::now().duration_since(prev_instant).as_secs_f64()
-                * self.sample_rate as f64) as usize;
-            canvas.set_draw_color(Color::RGB(
-                (255.
-                    * if wave[index].abs() as f64 / i16::MAX as f64 > 0.85 {
-                        1.
-                    } else {
-                        1.
-                    }) as u8,
-                0,
-                0,
-            ));
+            let mut last_instant = None;
+            for i in 0..self.subframes {
+                index += self.jump;
+                if wave[index] as f64 / i16::MAX as f64 > 0.9 {
+                    last_instant = Some(frame_begin.checked_add(self.time_between_subframes.mul_f64(i as f64)).unwrap());
+                }
+            }
+
+            match last_instant {
+                None => canvas.set_draw_color(Color::RGB(0, 0, 0)),
+                Some(instant) => {
+                    self.wheel.update_position(instant);
+                    canvas.set_draw_color(Color::RGB(255, 255, 255));
+                }
+            }
 
             canvas.clear();
             canvas.wheel(&self.wheel)?;
@@ -87,9 +86,9 @@ impl<'a> Tuner<'a> {
                 }
             }
 
-            let sleep = self.time_between_frames - Instant::now().duration_since(instant);
+            let sleep = self.time_between_frames - Instant::now().duration_since(frame_begin);
             std::thread::sleep(sleep);
-            println!("{:?}", self.time_between_frames - sleep);
+            // println!("{:?}", self.time_between_frames - sleep);
         }
 
         Ok(())
