@@ -14,3 +14,22 @@ pub fn generate_wave(sample_rate: u16, freq: f64, length: Duration) -> Vec<i16> 
     }
     vec
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generate_zeros() {
+        let wave = generate_wave(4, 2., Duration::from_secs(2));
+        println!("{:?}", wave);
+        assert_eq!(wave, vec![0_i16; 8]);
+    }
+
+    #[test]
+    fn generate_zeros_and_ones() {
+        let wave = generate_wave(4, 1., Duration::from_secs(1));
+        println!("{:?}", wave);
+        assert_eq!(wave, vec![0, i16::MAX, 0, -i16::MAX]);
+    }
+}
