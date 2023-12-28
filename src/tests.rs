@@ -35,7 +35,7 @@ fn wheel_rotation() -> Result<(), String> {
             break 'running;
         }
         wheel.update_position(frame);
-        canvas.wheel(&wheel)?;
+        canvas.wheel(&mut wheel, 255)?;
         canvas.present();
 
         for event in event_pump.poll_iter() {

@@ -53,12 +53,13 @@ impl<'a> Wheel<'a> {
 }
 
 pub trait WheelRenderer {
-    fn wheel(&mut self, wheel: &Wheel) -> Result<(), String>;
+    fn wheel(&mut self, wheel: &mut Wheel, alpha: u8) -> Result<(), String>;
 }
 
 impl WheelRenderer for Canvas<Window> {
-    fn wheel(&mut self, wheel: &Wheel) -> Result<(), String> {
+    fn wheel(&mut self, wheel: &mut Wheel, alpha: u8) -> Result<(), String> {
         // println!("Offset: {}", wheel.offset);
+        wheel.texture.set_alpha_mod(alpha);
         self.copy_ex(
             &wheel.texture,
             None,
