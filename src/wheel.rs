@@ -69,7 +69,7 @@ impl WheelRenderer for Canvas<Window> {
                 (wheel.rad * 2) as u32,
                 (wheel.rad * 2) as u32,
             ),
-            wheel.position,
+            -wheel.position,
             None,
             false,
             false,

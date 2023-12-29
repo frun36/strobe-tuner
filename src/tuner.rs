@@ -1,7 +1,4 @@
-use std::{
-    cmp::Ordering,
-    time::{Duration, Instant},
-};
+use std::time::{Duration, Instant};
 
 use sdl2::{event::Event, keyboard::Keycode, pixels::Color, render::Canvas, video::Window, Sdl};
 
@@ -20,7 +17,6 @@ impl Subframe {
 }
 
 pub struct Tuner<'a> {
-    fps: f64,
     subframes: u32,
     sample_rate: u16,
     time_between_frames: Duration,
@@ -37,7 +33,6 @@ impl<'a> Tuner<'a> {
         }
 
         Self {
-            fps,
             subframes,
             sample_rate,
             time_between_frames: Duration::from_secs_f64(1. / fps),
@@ -66,10 +61,10 @@ impl<'a> Tuner<'a> {
         let mut event_pump = sdl_context.event_pump().unwrap();
 
         // Wave to be used for tuning
-        let wave = crate::audio::generate_wave(self.sample_rate, 220., Duration::from_secs(60));
+        let wave = crate::audio::generate_wave(self.sample_rate, 220.2, Duration::from_secs(60));
 
         let displayed_wheels = (self.subframes as f64 * 0.1) as usize;
-        let mut subframe_buffer = SubframeBuffer::new(displayed_wheels, 0.9);
+        let mut subframe_buffer = SubframeBuffer::new(displayed_wheels, 0.0001);
         let simulation_begin = Instant::now();
 
         let mut curr_subframe_index = 0;
@@ -173,7 +168,7 @@ impl SubframeBuffer {
     }
 
     fn update_cutoff(&mut self) {
-        self.cutoff = self.thresh
+        self.cutoff = 1. - self.thresh
     }
 }
 
