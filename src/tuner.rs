@@ -88,7 +88,7 @@ impl<'a> Tuner<'a> {
             // Drawing
             canvas.set_draw_color(Color::RGB(255, 255, 255));
             canvas.clear();
-            canvas.wheel(&mut self.wheel, 255)?;
+            canvas.wheel(&self.wheel)?;
             canvas.present();
 
             for event in event_pump.poll_iter() {
@@ -157,14 +157,6 @@ impl SubframeBuffer {
     fn clear(&mut self) {
         self.buff.clear();
         self.begin = 0;
-    }
-
-    fn get_last(&self) -> Subframe {
-        if self.begin == 0 {
-            self.buff[self.buff.len() - 1]
-        } else {
-            self.buff[self.begin - 1]
-        }
     }
 
     fn update_cutoff(&mut self) {

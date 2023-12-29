@@ -6,6 +6,7 @@ use crate::wheel::WheelRenderer;
 
 use super::*;
 
+#[ignore]
 #[test]
 fn wheel_rotation() -> Result<(), String> {
     let sdl_context = sdl2::init().unwrap();
@@ -23,7 +24,7 @@ fn wheel_rotation() -> Result<(), String> {
     let freq = 0.5;
     let eight_turn = Duration::from_secs_f64(0.125 / freq);
 
-    let mut wheel = Wheel::new(&texture_creator, 400, 300, 200, freq).unwrap();
+    let mut wheel = Wheel::new(&texture_creator, 400, 300, 200, freq, 1).unwrap();
 
     canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
@@ -35,7 +36,7 @@ fn wheel_rotation() -> Result<(), String> {
             break 'running;
         }
         wheel.update_position(frame);
-        canvas.wheel(&mut wheel, 255)?;
+        canvas.wheel(&wheel)?;
         canvas.present();
 
         for event in event_pump.poll_iter() {
