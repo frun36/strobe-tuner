@@ -1,8 +1,15 @@
+import init, { greet, double_draw } from "./pkg/strobe_tuner.js";
+
+await init()
+
 const img = new Image();
 img.src = "img/wheel.png";
 const ctx = document.getElementById("canvas").getContext("2d");
 
+greet();
+
 function draw_wheel(rotation, alpha) {
+
     ctx.save();
 
     ctx.globalAlpha = alpha;
@@ -16,9 +23,11 @@ function draw_wheel(rotation, alpha) {
     ctx.restore();
 }
 
-img.onload = () => {
-    draw_wheel(Math.PI / 256, 0.2);
-    draw_wheel(2 * Math.PI / 256, 0.2);
-    draw_wheel(3 * Math.PI / 256, 0.2);
-    draw_wheel(4 * Math.PI / 256, 0.2);
-}
+// img.onload = () => {
+//     draw_wheel(Math.PI / 256, 0.2);
+//     draw_wheel(2 * Math.PI / 256, 0.2);
+//     draw_wheel(3 * Math.PI / 256, 0.2);
+//     draw_wheel(4 * Math.PI / 256, 0.2);
+// }
+
+double_draw();
