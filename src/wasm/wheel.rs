@@ -16,11 +16,14 @@ impl Wheel {
     }
 
     fn draw_with_position(&self, position: f32) {
-        super::draw_wheel(position, 0.1);
+        super::draw_wheel(position, 1.);
     }
 
     pub fn update_position(&mut self, time_ms: f32) {
         self.position += self.omega * time_ms * 0.001;
+        while self.position > 2. * PI {
+            self.position -= 2. * PI;
+        }
     }
 
     pub fn draw(&self) {
