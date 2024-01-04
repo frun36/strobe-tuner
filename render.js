@@ -3,8 +3,6 @@ img.src = "img/wheel.png";
 const ctx = document.getElementById("canvas").getContext("2d");
 
 export function draw_wheel(rotation, alpha) {    
-    console.log(img.src);
-
     ctx.save();
 
     ctx.globalAlpha = alpha;
@@ -13,7 +11,6 @@ export function draw_wheel(rotation, alpha) {
     ctx.rotate(rotation);
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(img, -img.width / 2, -img.height / 2);
-
 
     ctx.restore();
 }

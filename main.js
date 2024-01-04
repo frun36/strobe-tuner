@@ -4,3 +4,9 @@ await init()
 
 greet();
 double_draw();
+
+frame = (timeStamp) => {
+    
+
+    window.requestAnimationFrame(timeStamp);
+}
