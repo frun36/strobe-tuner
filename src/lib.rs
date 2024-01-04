@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+use std::{f64::consts::PI, time::Duration};
 
 use wasm_bindgen::prelude::*;
 
@@ -9,10 +9,15 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(s: &str);
+}
 
+#[wasm_bindgen(module = "/render.js")]
+extern "C" {
     fn draw_wheel(rotation: f64, alpha: f64);
+
+    fn clear();
 }
 
 #[wasm_bindgen]
@@ -24,4 +29,6 @@ pub fn greet() {
 pub fn double_draw() {
     draw_wheel(0., 0.5);
     draw_wheel(PI / 8., 0.5);
+    // std::thread::sleep(Duration::from_millis(1000));
+    // clear();
 }
