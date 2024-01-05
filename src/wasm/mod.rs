@@ -1,9 +1,9 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{cell::RefCell, rc::Rc, time::Duration};
 
 use wasm_bindgen::prelude::*;
-use web_sys::{console, window};
+use web_sys::window;
 
-use self::wheel::Wheel;
+use self::{wheel::Wheel, app::App};
 
 mod app;
 mod wheel;
@@ -31,10 +31,6 @@ pub fn greet() {
     alert("Hello from the strobe tuner!");
 }
 
-// fn window() -> web_sys::Window {
-//     web_sys::window().expect("No global window exists")
-// }
-
 fn request_animation_frame(callback: &Closure<dyn FnMut(f64)>) {
     if let Some(window) = window() {
         window
@@ -45,44 +41,24 @@ fn request_animation_frame(callback: &Closure<dyn FnMut(f64)>) {
 
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
-    // let window = web_sys::window().expect("No global window exists");
-    // let document = window.document().expect("No document on window");
-
-    let mut wheel = Wheel::new(0.5);
-
-    // let canvas = document.get_element_by_id("canvas").expect("No canvas found");
-
-    // let canvas: web_sys::HtmlCanvasElement = canvas
-    //     .dyn_into::<web_sys::HtmlCanvasElement>()
-    //     .map_err(|_| ())
-    //     .unwrap();
-
-    // let context = canvas
-    //     .get_context("2d")
-    //     .unwrap()
-    //     .unwrap()
-    //     .dyn_into::<web_sys::CanvasRenderingContext2d>()
-    //     .unwrap();
+    let wheel = Wheel::new(0.5);
+    let mut app = App::new(wheel);
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
     let mut prev_timestamp = Box::new(0.);
-
     let anim_callback = move |timestamp: f64| {
-        console::log_1(&format!("Timestamp: {}", timestamp).into());
-        wheel.update_position((timestamp - *prev_timestamp) as f32);
-        wheel.draw();
+        let elapsed = Duration::from_secs_f64((timestamp - *prev_timestamp) * 0.001);
+
+        app.handle_frame(elapsed);
 
         *prev_timestamp = timestamp;
         request_animation_frame(f.borrow().as_ref().unwrap());
     };
 
-
     *g.borrow_mut() = Some(Closure::wrap(Box::new(anim_callback)));
     request_animation_frame(g.borrow().as_ref().unwrap());
-
-    // request_animation_frame();
 
     Ok(())
 }
