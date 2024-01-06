@@ -3,9 +3,10 @@ use std::{cell::RefCell, rc::Rc, time::Duration};
 use wasm_bindgen::prelude::*;
 use web_sys::window;
 
-use self::{wheel::Wheel, app::App};
+use self::{wheel::Wheel, app::App, tuner::Tuner};
 
 mod app;
+mod tuner;
 mod wheel;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -42,7 +43,8 @@ fn request_animation_frame(callback: &Closure<dyn FnMut(f64)>) {
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
     let wheel = Wheel::new(0.5);
-    let mut app = App::new(wheel);
+    let tuner = Tuner::new(512, 44100, wheel, 0.9);
+    let mut app = App::new(tuner);
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();

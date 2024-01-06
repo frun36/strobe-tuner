@@ -1,21 +1,21 @@
 use std::time::Duration;
 
-use super::wheel::Wheel;
+use super::{tuner::Tuner};
 
 pub struct App {
-    wheel: Wheel,
+    tuner: Tuner,
 
 }
 
 impl App {
-    pub fn new(wheel: Wheel) -> Self {
+    pub fn new(tuner: Tuner) -> Self {
         Self {
-            wheel,
+            tuner,
         }
     }
 
     pub fn handle_frame(&mut self, elapsed: Duration) {
-        self.wheel.update_position(elapsed);
-        self.wheel.draw();
+        self.tuner.update_position(elapsed);
+        self.tuner.draw_wheel();
     }
 }
