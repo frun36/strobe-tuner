@@ -42,7 +42,7 @@ fn request_animation_frame(callback: &Closure<dyn FnMut(f64)>) {
 
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
-    let wheel = Wheel::new(0.5);
+    let wheel = Wheel::new(55.);
     let tuner = Tuner::new(512, 44100, wheel, 0.9);
     let mut app = App::new(tuner);
 

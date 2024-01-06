@@ -15,7 +15,7 @@ impl App {
     }
 
     pub fn handle_frame(&mut self, elapsed: Duration) {
-        self.tuner.update_position(elapsed);
+        self.tuner.calculate_wheel_positions(elapsed);
         self.tuner.draw_wheel();
     }
 }
