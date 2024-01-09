@@ -1,5 +1,7 @@
 use std::{f32::consts::PI, time::Duration};
 
+use web_sys::console;
+
 pub struct Wheel {
     position_buffer: WheelBuffer,
     position: f32,
@@ -28,6 +30,7 @@ impl Wheel {
                 new_position -= 2. * PI;
             }
             self.position_buffer.insert(new_position);
+            console::log_1(&format!("{:?} {:?}", new_position - last_position, elapsed).into());
         } else {
             self.position_buffer.insert(0.);
         }

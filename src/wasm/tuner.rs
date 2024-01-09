@@ -20,6 +20,7 @@ pub fn generate_wave(sample_rate: u16, freq: f32, length: Duration) -> Vec<f32> 
         let value = f32::sin(2. * PI * freq * i as f32 / sample_rate as f32);
         vec.push(value);
     }
+    // web_sys::console::log_1(&format!("{:?}", vec).into());
     vec
 }
 
