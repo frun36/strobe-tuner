@@ -3,19 +3,17 @@
 
 <head>
     <title>Strobe Tuner</title>
-    <style>
-        canvas {
-            border: 1px solid black;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script type="module" src="./pkg/strobe_tuner.js"></script>
     <script type="module" src="./render.js"></script>
     <script type="module" src="./main.js"></script>
 </head>
 
 <body>
-    <h1>Strobe tuner</h1>
-    <canvas id="canvas" width="400" height="400"></canvas>
+    <div class="tuner">
+        <h1>Strobe tuner</h1>
+        <canvas id="canvas" width="400" height="200"></canvas>
+    </div>
 </body>
 
 </html>

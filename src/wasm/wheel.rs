@@ -1,6 +1,6 @@
 use std::{f32::consts::PI, time::Duration};
 
-use web_sys::console;
+use web_sys::{console, Performance, window};
 
 use super::DOMHighResTimestamp;
 
@@ -24,7 +24,7 @@ impl Wheel {
     }
 
     fn draw_with_position(&self, position: f32) {
-        super::draw_wheel(position, 0.1);
+        super::draw_wheel(-position, 0.1);
     }
 
     pub fn update_position(&mut self, timestamp: DOMHighResTimestamp) {

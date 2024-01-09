@@ -50,7 +50,7 @@ pub fn run() -> Result<(), JsValue> {
     panic::set_hook(Box::new(console_error_panic_hook::hook));
 
     let wheel = Wheel::new(55.);
-    let tuner = Tuner::new(512, 44100, wheel, 0.999, 219.9);
+    let tuner = Tuner::new(512, 44100, wheel, 0.999, 220.);
     let mut app = App::new(tuner);
 
     let f = Rc::new(RefCell::new(None));
