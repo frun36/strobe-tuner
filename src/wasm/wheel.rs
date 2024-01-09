@@ -35,7 +35,7 @@ impl Wheel {
                 new_position -= 2. * PI;
             }
             self.position_buffer.insert(new_position);
-            // console::log_1(&format!("Position: {:?} Elapsed: {:?}", new_position - last_position, elapsed).into());
+            console::log_1(&format!("Position: {:?} Elapsed: {:?}", new_position - last_position, elapsed).into());
         } else {
             self.position_buffer.insert(0.);
         }
@@ -54,6 +54,15 @@ impl Wheel {
             self.draw_with_position(*position);
         }
         // self.draw_with_position(self.position);
+    }
+
+    pub fn set_freq(&mut self, freq: f32) {
+        self.freq = freq;
+        self.omega = 2. * PI * freq;
+    }
+
+    pub fn get_freq(&self) -> f32 {
+        self.freq
     }
 }
 

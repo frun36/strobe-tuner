@@ -1,13 +1,11 @@
-use std::{f32::consts::PI, time::Duration};
-
-use web_sys::console::time;
+use std::{cell::RefCell, f32::consts::PI, rc::Rc, time::Duration};
 
 use super::{wheel::Wheel, DOMHighResTimestamp};
 
 pub struct Tuner {
     subframes: usize,
     sample_rate: u16,
-    wheel: Wheel,
+    wheel: Rc<RefCell<Wheel>>,
     thresh: f32,
     wave: Vec<f32>,
     last_timestamp: DOMHighResTimestamp,
@@ -31,7 +29,7 @@ impl Tuner {
     pub fn new(
         subframes: usize,
         sample_rate: u16,
-        wheel: Wheel,
+        wheel: Rc<RefCell<Wheel>>,
         thresh: f32,
         wave_freq: f32,
     ) -> Self {
@@ -40,7 +38,7 @@ impl Tuner {
             sample_rate,
             wheel,
             thresh,
-            wave: generate_wave(sample_rate, wave_freq, Duration::from_millis(10000)),
+            wave: generate_wave(sample_rate, wave_freq, Duration::from_millis(60000)),
             last_timestamp: 0.,
             last_index: 0,
             subframe_buffer: SubframeBuffer::new(32, thresh),
@@ -63,7 +61,7 @@ impl Tuner {
                 .insert(Subframe::new(self.wave[curr_index].abs(), curr_index))
             {
                 let wheel_timestamp = timestamp + elapsed * (i as f64 / self.subframes as f64);
-                self.wheel.update_position(wheel_timestamp);
+                self.wheel.borrow_mut().update_position(wheel_timestamp);
             }
         }
 
@@ -72,7 +70,7 @@ impl Tuner {
     }
 
     pub fn draw_wheel(&self) {
-        self.wheel.draw();
+        self.wheel.borrow().draw();
     }
 }
 
