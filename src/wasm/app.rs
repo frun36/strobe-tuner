@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use super::{tuner::Tuner};
+use super::{tuner::Tuner, DOMHighResTimestamp};
 
 pub struct App {
     tuner: Tuner,
@@ -14,8 +14,8 @@ impl App {
         }
     }
 
-    pub fn handle_frame(&mut self, elapsed: Duration) {
-        self.tuner.calculate_wheel_positions(elapsed);
+    pub fn handle_frame(&mut self, timestamp: DOMHighResTimestamp) {
+        self.tuner.calculate_wheel_positions(timestamp);
         self.tuner.draw_wheel();
     }
 }

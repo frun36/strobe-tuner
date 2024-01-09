@@ -2,38 +2,45 @@ use std::{f32::consts::PI, time::Duration};
 
 use web_sys::console;
 
+use super::DOMHighResTimestamp;
+
 pub struct Wheel {
     position_buffer: WheelBuffer,
     position: f32,
     freq: f32,
     omega: f32,
+    last_timestamp: DOMHighResTimestamp,
 }
 
 impl Wheel {
     pub fn new(freq: f32) -> Self {
         Self {
-            position_buffer: WheelBuffer::new(4),
+            position_buffer: WheelBuffer::new(16),
             position: 0.,
             freq,
             omega: 2. * PI * freq,
+            last_timestamp: 0.,
         }
     }
 
     fn draw_with_position(&self, position: f32) {
-        super::draw_wheel(position, 0.3);
+        super::draw_wheel(position, 0.1);
     }
 
-    pub fn update_position(&mut self, elapsed: Duration) {
+    pub fn update_position(&mut self, timestamp: DOMHighResTimestamp) {
+        let elapsed = timestamp - self.last_timestamp;
         if let Some(last_position) = self.position_buffer.get_last() {
-            let mut new_position = last_position + self.omega * elapsed.as_secs_f32();
+            let mut new_position = last_position + self.omega * elapsed as f32 * 0.001;
             while new_position > 2. * PI {
                 new_position -= 2. * PI;
             }
             self.position_buffer.insert(new_position);
-            console::log_1(&format!("{:?} {:?}", new_position - last_position, elapsed).into());
+            // console::log_1(&format!("Position: {:?} Elapsed: {:?}", new_position - last_position, elapsed).into());
         } else {
             self.position_buffer.insert(0.);
         }
+
+        self.last_timestamp = timestamp;
 
         // self.position += elapsed.as_secs_f32() * self.omega;
         // while self.position > 2. * PI {

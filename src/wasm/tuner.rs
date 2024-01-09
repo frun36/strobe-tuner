@@ -1,6 +1,8 @@
 use std::{f32::consts::PI, time::Duration};
 
-use super::wheel::Wheel;
+use web_sys::console::time;
+
+use super::{wheel::Wheel, DOMHighResTimestamp};
 
 pub struct Tuner {
     subframes: usize,
@@ -8,6 +10,7 @@ pub struct Tuner {
     wheel: Wheel,
     thresh: f32,
     wave: Vec<f32>,
+    last_timestamp: DOMHighResTimestamp,
     last_index: usize,
     subframe_buffer: SubframeBuffer,
 }
@@ -25,41 +28,47 @@ pub fn generate_wave(sample_rate: u16, freq: f32, length: Duration) -> Vec<f32> 
 }
 
 impl Tuner {
-    pub fn new(subframes: usize, sample_rate: u16, wheel: Wheel, thresh: f32) -> Self {
+    pub fn new(
+        subframes: usize,
+        sample_rate: u16,
+        wheel: Wheel,
+        thresh: f32,
+        wave_freq: f32,
+    ) -> Self {
         Self {
             subframes,
             sample_rate,
             wheel,
             thresh,
-            wave: generate_wave(sample_rate, 220., Duration::from_millis(10000)),
+            wave: generate_wave(sample_rate, wave_freq, Duration::from_millis(10000)),
+            last_timestamp: 0.,
             last_index: 0,
             subframe_buffer: SubframeBuffer::new(32, thresh),
         }
     }
 
-    pub fn calculate_wheel_positions(&mut self, elapsed: Duration) {
+    pub fn calculate_wheel_positions(&mut self, timestamp: DOMHighResTimestamp) {
         self.subframe_buffer.clear();
-        let new_index =
-            self.last_index + (elapsed.as_secs_f32() * self.sample_rate as f32) as usize;
 
-        let jump = (new_index - self.last_index) / self.subframes;
+        let elapsed = timestamp - self.last_timestamp;
 
-        let mut last_subframe_index = self.last_index;
-        for i in 0..self.subframes {
-            let subframe_index = self.last_index + jump * (i + 1);
-            let curr_subframe = Subframe::new(self.wave[subframe_index].abs(), subframe_index);
+        let jump = (0.001 * elapsed / self.subframes as f64) * self.sample_rate as f64;
 
-            if self.subframe_buffer.insert(curr_subframe) {
-                let curr_elapsed =
-                    Duration::from_secs_f32((subframe_index - last_subframe_index) as f32 / self.sample_rate as f32);
-                self.wheel.update_position(curr_elapsed);
+        let mut curr_index = 0;
+        for i in 1..=self.subframes {
+            curr_index = self.last_index + (i as f64 * jump) as usize;
+
+            if self
+                .subframe_buffer
+                .insert(Subframe::new(self.wave[curr_index].abs(), curr_index))
+            {
+                let wheel_timestamp = timestamp + elapsed * (i as f64 / self.subframes as f64);
+                self.wheel.update_position(wheel_timestamp);
             }
-
-            last_subframe_index = subframe_index;
         }
 
-        // self.wheel.update_position(elapsed);
-        self.last_index = new_index;
+        self.last_index = curr_index;
+        self.last_timestamp = timestamp;
     }
 
     pub fn draw_wheel(&self) {
