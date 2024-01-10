@@ -2,6 +2,8 @@ use std::{cell::RefCell, f32::consts::PI, rc::Rc, time::Duration};
 
 use web_sys::console;
 
+use wasm_bindgen::prelude::*;
+
 use super::{wheel::Wheel, DOMHighResTimestamp};
 
 pub struct Tuner {
@@ -16,8 +18,9 @@ pub struct Tuner {
 }
 
 // temporary testing function
-pub fn generate_wave(sample_rate: u16, freq: f32, length: Duration) -> Vec<f32> {
-    let vec_len = (sample_rate as f32 * length.as_secs_f32()) as usize;
+// #[wasm_bindgen]
+pub fn generate_wave(sample_rate: u16, freq: f32, length_secs: f32) -> Vec<f32> {
+    let vec_len = (sample_rate as f32 * length_secs) as usize;
     let mut vec = Vec::new();
     for i in 0..vec_len {
         let value = f32::sin(2. * PI * freq * i as f32 / sample_rate as f32);
@@ -40,7 +43,7 @@ impl Tuner {
             sample_rate,
             wheel,
             thresh,
-            wave: generate_wave(sample_rate, wave_freq, Duration::from_millis(60000)),
+            wave: generate_wave(sample_rate, wave_freq, 60.),
             last_timestamp: 0.,
             last_index: 0,
             subframe_buffer: SubframeBuffer::new(32, thresh),
