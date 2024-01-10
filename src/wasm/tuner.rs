@@ -1,5 +1,7 @@
 use std::{cell::RefCell, f32::consts::PI, rc::Rc, time::Duration};
 
+use web_sys::console;
+
 use super::{wheel::Wheel, DOMHighResTimestamp};
 
 pub struct Tuner {
@@ -50,7 +52,10 @@ impl Tuner {
 
         let elapsed = timestamp - self.last_timestamp;
 
+        // let subframes = self.subframes * (0.001 * elapsed * 60.) as usize;
+
         let jump = (0.001 * elapsed / self.subframes as f64) * self.sample_rate as f64;
+
 
         let mut curr_index = 0;
         for i in 1..=self.subframes {
@@ -61,6 +66,9 @@ impl Tuner {
                 .insert(Subframe::new(self.wave[curr_index].abs(), curr_index))
             {
                 let wheel_timestamp = timestamp + elapsed * (i as f64 / self.subframes as f64);
+
+                // console::log_1(&format!("Timestamp: {} Wheel timestamp: {} Level: {}", timestamp, wheel_timestamp, self.wave[curr_index].abs()).into());
+
                 self.wheel.borrow_mut().update_position(wheel_timestamp);
             }
         }

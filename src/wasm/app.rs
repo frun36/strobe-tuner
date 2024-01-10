@@ -1,10 +1,7 @@
-use std::time::Duration;
-
 use super::{tuner::Tuner, DOMHighResTimestamp};
 
 pub struct App {
     tuner: Tuner,
-
 }
 
 impl App {

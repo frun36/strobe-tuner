@@ -1,7 +1,7 @@
-use std::{cell::RefCell, rc::Rc, time::Duration};
+use std::{cell::RefCell, rc::Rc};
 
 use wasm_bindgen::prelude::*;
-use web_sys::{window, HtmlButtonElement, js_sys::Function, EventListener, console};
+use web_sys::{window, HtmlButtonElement};
 
 extern crate console_error_panic_hook;
 use std::panic;
@@ -99,8 +99,6 @@ fn create_freq_buttons_and_label(wheel: Rc<RefCell<Wheel>>) -> Result<(), JsValu
     buttons_div.append_child(&button_minus)?;
     buttons_div.append_child(label.borrow().as_ref())?;
     buttons_div.append_child(&button_plus)?;
-
-    // wheel.borrow_mut().set_freq(69.);
 
     Ok(())
 }

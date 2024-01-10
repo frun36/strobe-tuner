@@ -35,7 +35,7 @@ impl Wheel {
                 new_position -= 2. * PI;
             }
             self.position_buffer.insert(new_position);
-            console::log_1(&format!("Position: {:?} Elapsed: {:?}", new_position - last_position, elapsed).into());
+            // console::log_1(&format!("Position: {:?} Elapsed: {:?}", new_position - last_position, elapsed).into());
         } else {
             self.position_buffer.insert(0.);
         }
