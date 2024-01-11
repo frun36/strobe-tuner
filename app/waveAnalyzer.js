@@ -1,10 +1,10 @@
 let buffer_len = 16;
 
-function generateWave(sample_rate, freq, length_secs) {
+function generateWave(sample_rate, waveFreq, length_secs) {
     let vec_len = sample_rate * length_secs;
     let vec = [];
-    for (let i = 0; i<vec_len; i++) {
-        let value = Math.sin(2. * Math.PI * freq * i / sample_rate);
+    for (let i = 0; i < vec_len; i++) {
+        let value = Math.sin(2. * Math.PI * waveFreq * i / sample_rate);
         vec.push(value);
     }
     return vec;
@@ -30,18 +30,40 @@ class Wheel {
 
 let wave = generateWave(44100, 220.0, 60);
 
-// console.log(wave);
+console.log(wave);
 
-let wheel = new Wheel(0.25);
+let wheel = new Wheel(55.);
 
-// let iteration = 0;
+
 setInterval(() => {
-    wheel.updatePosition(performance.now());
-    console.log(wheel.position);
-}, 100);
+    let timestamp = performance.now();
+    // console.log("Timestamp: " + timestamp);
+    let index = timestamp * 0.001 * 44100;
+    while(Math.abs(wave[index]) < 0.99) {
+        index -= 8;
+    }
+    let newTimestamp = index * 1000 / 44100.;
+    wheel.updatePosition(newTimestamp);
+    // console.log(performance.now() - timestamp);
+    // console.log(wheel.freq);
+}, 2);
 
-onmessage = (msg) => {
+onmessage = (event) => {
+    // let timestamp = performance.now();
+    // // console.log("Timestamp: " + timestamp);
+    // let index = timestamp * 0.001 * 44100;
+    // while(Math.abs(wave[index]) < 0.99) {
+    //     index -= 1;
+    // }
+    // let newTimestamp = index * 1000 / 44100.;
+    // wheel.updatePosition(newTimestamp);
+
+    let msg = event.data;
     // len = msg.data.len;
     // console.log("Received len: " + len);
-    postMessage(wheel);
+    wheel.freq += msg.freqChange;
+    wheel.omega = 2 * Math.PI * wheel.freq;
+    if(msg.getFrame) {
+        postMessage(wheel);
+    }
 }

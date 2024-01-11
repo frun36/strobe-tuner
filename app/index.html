@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script type="module" src="./pkg/strobe_tuner.js"></script>
     <script type="module" src="./render.js"></script>
-    <script type="module" src="./waveAnalyzer.js"></script>
+    <!-- <script type="module" src="./waveAnalyzer.js"></script> -->
     <script type="module" src="./main.js"></script>
 </head>
 
@@ -14,6 +14,11 @@
     <div class="tuner" id="tuner">
         <h1>Strobe tuner</h1>
         <canvas id="canvas" width="400" height="200"></canvas>
+        <div>
+            <button id="wheel-freq-minus">Wheel freq -</button>
+            <label id="wheel-freq-label">Wheel freq: ...</label>
+            <button id="wheel-freq-plus">Wheel freq +</button>
+        </div>
     </div>
 </body>
 

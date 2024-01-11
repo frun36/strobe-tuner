@@ -4,21 +4,32 @@ import { clear, draw_wheel } from "./render.js"
 
 await init()
 
-greet();
+// greet();
 
 let waveAnalyzer = new Worker("waveAnalyzer.js");
 
-let get_positions_message = { len: 16 };
+let getFrameMessage = { getFrame: true, freqChange: 0 };
+let minusFreqMessage = { getFrame: false, freqChange: -0.1 };
+let plusFreqMessage = { getFrame: false, freqChange: 0.1 };
+
 
 function step(timeStamp) {
-    waveAnalyzer.postMessage(get_positions_message);
+    waveAnalyzer.postMessage(getFrameMessage);
 
     window.requestAnimationFrame(step);
 }
 
-waveAnalyzer.onmessage = (msg) => {
+let buttonMinus = document.getElementById("wheel-freq-minus");
+let freqLabel = document.getElementById("wheel-freq-label");
+let buttonPlus = document.getElementById("wheel-freq-plus");
+
+buttonMinus.onclick = () => { waveAnalyzer.postMessage(minusFreqMessage) };
+buttonPlus.onclick = () => { waveAnalyzer.postMessage(plusFreqMessage) };
+
+waveAnalyzer.onmessage = (event) => {
     clear();
-    draw_wheel(msg.data.position, 1);
+    freqLabel.textContent = "Wheel freq: " + Math.round(event.data.freq * 100) / 100;
+    draw_wheel(-event.data.position, 1);
 };
 
 window.requestAnimationFrame(step);
