@@ -1,5 +1,5 @@
 const img = new Image();
-img.src = "img/wheel.png";
+img.src = "./img/wheel.png";
 const ctx = document.getElementById("canvas").getContext("2d");
 
 export function draw_wheel(rotation, alpha) {    

@@ -25,7 +25,7 @@ extern "C" {
     fn alert(s: &str);
 }
 
-#[wasm_bindgen(module = "/render.js")]
+#[wasm_bindgen(module = "/app/render.js")]
 extern "C" {
     fn draw_wheel(rotation: f32, alpha: f32);
 

@@ -4,7 +4,7 @@ import { clear, draw_wheel } from "./render.js"
 
 await init()
 
-// greet();
+greet();
 
 let waveAnalyzer = new Worker("waveAnalyzer.js");
 
