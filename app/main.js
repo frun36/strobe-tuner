@@ -9,8 +9,8 @@ await init()
 let waveAnalyzer = new Worker("waveAnalyzer.js");
 
 let getFrameMessage = { getFrame: true, freqChange: 0 };
-let minusFreqMessage = { getFrame: false, freqChange: -0.1 };
-let plusFreqMessage = { getFrame: false, freqChange: 0.1 };
+let minusFreqMessage = { getFrame: false, freqChange: -0.01 };
+let plusFreqMessage = { getFrame: false, freqChange: 0.01 };
 
 
 function step(timeStamp) {
