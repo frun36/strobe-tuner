@@ -8,24 +8,22 @@ function step(timeStamp) {
     window.requestAnimationFrame(step);
 }
 
-let buttonMinus = document.getElementById("wheel-freq-minus");
-let freqLabel = document.getElementById("wheel-freq-label");
-let buttonPlus = document.getElementById("wheel-freq-plus");
-
-buttonMinus.onclick = () => { tuner.postMessage({ type: "change-freq", freqChange: -0.05 }); };
-buttonPlus.onclick = () => { tuner.postMessage({ type: "change-freq", freqChange: 0.05 }); };
+let freqInput = document.getElementById("wheel-frequency");
+freqInput.oninput = () => { tuner.postMessage({ type: "set-freq", newFreq: freqInput.value }); };
 
 tuner.onmessage = (event) => {
     let msg = event.data;
+    // console.log("Main got message type: " + msg.type);
     switch (msg.type) {
         case "draw-wheel":
+            // console.log(msg.positionBuffer);
             clear();
             msg.positionBuffer.forEach(position => {
-                draw_wheel(-position, 0.1);
+                draw_wheel(-position, 0.2);
             });
             break;
-        case "update-freq-label":
-            freqLabel.textContent = "Wheel freq: " + msg.newFreq.toFixed(2);
+        case "update-freq-value":
+            freqInput.value = msg.newFreq.toFixed(2);
             break;
         default:
             console.error(msg.type + "is not a supported message from tuner");

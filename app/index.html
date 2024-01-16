@@ -3,6 +3,7 @@
 
 <head>
     <title>Strobe Tuner</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <script type="module" src="./pkg/strobe_tuner.js"></script>
     <script type="module" src="./render.js"></script>
@@ -14,9 +15,8 @@
         <h1>Strobe tuner</h1>
         <canvas id="canvas" width="400" height="200"></canvas>
         <div>
-            <button id="wheel-freq-minus">Wheel freq -</button>
-            <label id="wheel-freq-label">Wheel freq: ...</label>
-            <button id="wheel-freq-plus">Wheel freq +</button>
+            <label for="wheel-frequency">Wheel frequency (Hz): </label>
+            <input type="number" id="wheel-frequency" step="0.01">
         </div>
     </div>
 </body>

@@ -18,7 +18,11 @@ h1 {
     align-items: center;
 }
 
-button {
+input[type="number"] {
     height: 50px;
-    width: max-content;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1 !important;
+    height: 50px;
 }

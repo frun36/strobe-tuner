@@ -22,23 +22,25 @@ function generateWave(sampleRate, waveFreq, lengthSecs) {
     return vec;
 }
 
-let wave = generateWave(sampleRate, 220.0, 60);
+let wave = generateWave(sampleRate, 220., 60);
+// console.log(wave);
 
 class Tuner {
     constructor(sampleRate, freq, motionBlurSize) {
         this.sampleRate = sampleRate;
         this.wheel = Wheel.new(freq, motionBlurSize);
+        postMessage({ type: "update-freq-value", newFreq: freq });
         console.log("New Tuner created");
     }
 }
 
-let tuner = new Tuner(sampleRate, 55., 16);
+let tuner = new Tuner(sampleRate, 55., 8);
 
 let index = 0;
 setInterval(() => {
     index += audioBuffSize;
     while (Math.abs(wave[index]) < 0.99) {
-        index -= 8;
+        index -= 1;
     }
     let newTimestamp = index * 1000 / sampleRate;
     tuner.wheel.update_position(newTimestamp);
@@ -46,16 +48,14 @@ setInterval(() => {
 
 onmessage = (event) => {
     let msg = event.data;
-    // console.log("Got message type: " + msg.type);
+    // console.log("Tuner got message type: " + msg.type);
     switch (msg.type) {
         case "get-frame":
             postMessage({ type: "draw-wheel", positionBuffer: tuner.wheel.get_position_buffer() });
             break;
-        case "change-freq":
-            let newFreq = tuner.wheel.get_freq() + msg.freqChange;
-            console.log("New freq: " + newFreq);
-            postMessage({ type: "update-freq-label", newFreq: newFreq });
-            tuner.wheel.set_freq(newFreq);
+        case "set-freq":
+            console.log("New freq: " + msg.newFreq);
+            tuner.wheel.set_freq(msg.newFreq);
             break;
         default:
             console.error(msg.type + "is not a supported message to tuner");
