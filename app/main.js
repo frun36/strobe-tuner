@@ -20,7 +20,9 @@ tuner.onmessage = (event) => {
     switch (msg.type) {
         case "draw-wheel":
             clear();
-            draw_wheel(-msg.position, 1);
+            msg.positionBuffer.forEach(position => {
+                draw_wheel(-position, 0.1);
+            });
             break;
         case "update-freq-label":
             freqLabel.textContent = "Wheel freq: " + msg.newFreq.toFixed(2);

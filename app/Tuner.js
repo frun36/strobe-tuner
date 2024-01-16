@@ -25,14 +25,14 @@ function generateWave(sampleRate, waveFreq, lengthSecs) {
 let wave = generateWave(sampleRate, 220.0, 60);
 
 class Tuner {
-    constructor(sampleRate, freq) {
+    constructor(sampleRate, freq, motionBlurSize) {
         this.sampleRate = sampleRate;
-        this.wheel = Wheel.new(freq, 8);
+        this.wheel = Wheel.new(freq, motionBlurSize);
         console.log("New Tuner created");
     }
 }
 
-let tuner = new Tuner(sampleRate, 55.);
+let tuner = new Tuner(sampleRate, 55., 16);
 
 let index = 0;
 setInterval(() => {
@@ -49,7 +49,7 @@ onmessage = (event) => {
     // console.log("Got message type: " + msg.type);
     switch (msg.type) {
         case "get-frame":
-            postMessage({ type: "draw-wheel", position: tuner.wheel.get_position() });
+            postMessage({ type: "draw-wheel", positionBuffer: tuner.wheel.get_position_buffer() });
             break;
         case "change-freq":
             let newFreq = tuner.wheel.get_freq() + msg.freqChange;

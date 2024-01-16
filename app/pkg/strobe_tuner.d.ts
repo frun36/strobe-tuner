@@ -26,13 +26,9 @@ export class Wheel {
 */
   get_freq(): number;
 /**
-* @returns {Float32Array}
+* @returns {any}
 */
-  get_position_buffer(): Float32Array;
-/**
-* @returns {number}
-*/
-  get_position(): number;
+  get_position_buffer(): any;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -44,10 +40,8 @@ export interface InitOutput {
   readonly wheel_update_position: (a: number, b: number) => void;
   readonly wheel_set_freq: (a: number, b: number) => void;
   readonly wheel_get_freq: (a: number) => number;
-  readonly wheel_get_position_buffer: (a: number, b: number) => void;
-  readonly wheel_get_position: (a: number) => number;
+  readonly wheel_get_position_buffer: (a: number) => number;
   readonly set_panic_hook: () => void;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
