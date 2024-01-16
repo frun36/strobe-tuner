@@ -1,20 +1,9 @@
-import init, { greet, run } from "./pkg/strobe_tuner.js";
+import { clear, draw_wheel } from "./render.js";
 
-import { clear, draw_wheel } from "./render.js"
-
-await init()
-
-// greet();
-
-let waveAnalyzer = new Worker("waveAnalyzer.js");
-
-let getFrameMessage = { getFrame: true, freqChange: 0 };
-let minusFreqMessage = { getFrame: false, freqChange: -0.01 };
-let plusFreqMessage = { getFrame: false, freqChange: 0.01 };
-
+let tuner = new Worker("Tuner.js", { type: "module" });
 
 function step(timeStamp) {
-    waveAnalyzer.postMessage(getFrameMessage);
+    tuner.postMessage({ type: "get-frame" });
 
     window.requestAnimationFrame(step);
 }
@@ -23,15 +12,22 @@ let buttonMinus = document.getElementById("wheel-freq-minus");
 let freqLabel = document.getElementById("wheel-freq-label");
 let buttonPlus = document.getElementById("wheel-freq-plus");
 
-buttonMinus.onclick = () => { waveAnalyzer.postMessage(minusFreqMessage) };
-buttonPlus.onclick = () => { waveAnalyzer.postMessage(plusFreqMessage) };
+buttonMinus.onclick = () => { tuner.postMessage({ type: "change-freq", freqChange: -0.05 }); };
+buttonPlus.onclick = () => { tuner.postMessage({ type: "change-freq", freqChange: 0.05 }); };
 
-waveAnalyzer.onmessage = (event) => {
-    clear();
-    freqLabel.textContent = "Wheel freq: " + Math.round(event.data.freq * 100) / 100;
-    draw_wheel(-event.data.position, 1);
+tuner.onmessage = (event) => {
+    let msg = event.data;
+    switch (msg.type) {
+        case "draw-wheel":
+            clear();
+            draw_wheel(-msg.position, 1);
+            break;
+        case "update-freq-label":
+            freqLabel.textContent = "Wheel freq: " + msg.newFreq.toFixed(2);
+            break;
+        default:
+            console.error(msg.type + "is not a supported message from tuner");
+    }
 };
 
 window.requestAnimationFrame(step);
-
-// run();

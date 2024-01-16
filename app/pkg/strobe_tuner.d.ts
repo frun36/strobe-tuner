@@ -14,9 +14,9 @@ export class Wheel {
 */
   static new(freq: number, motion_blur_size: number): Wheel;
 /**
-* @param {number} timestamp
+* @param {number} timestamp_ms
 */
-  update_position(timestamp: number): void;
+  update_position(timestamp_ms: number): void;
 /**
 * @param {number} freq
 */
@@ -29,6 +29,10 @@ export class Wheel {
 * @returns {Float32Array}
 */
   get_position_buffer(): Float32Array;
+/**
+* @returns {number}
+*/
+  get_position(): number;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -41,6 +45,7 @@ export interface InitOutput {
   readonly wheel_set_freq: (a: number, b: number) => void;
   readonly wheel_get_freq: (a: number) => number;
   readonly wheel_get_position_buffer: (a: number, b: number) => void;
+  readonly wheel_get_position: (a: number) => number;
   readonly set_panic_hook: () => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;

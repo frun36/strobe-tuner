@@ -162,10 +162,10 @@ export class Wheel {
         return Wheel.__wrap(ret);
     }
     /**
-    * @param {number} timestamp
+    * @param {number} timestamp_ms
     */
-    update_position(timestamp) {
-        wasm.wheel_update_position(this.__wbg_ptr, timestamp);
+    update_position(timestamp_ms) {
+        wasm.wheel_update_position(this.__wbg_ptr, timestamp_ms);
     }
     /**
     * @param {number} freq
@@ -195,6 +195,13 @@ export class Wheel {
         } finally {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
+    }
+    /**
+    * @returns {number}
+    */
+    get_position() {
+        const ret = wasm.wheel_get_position(this.__wbg_ptr);
+        return ret;
     }
 }
 
