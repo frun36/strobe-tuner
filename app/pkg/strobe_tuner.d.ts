@@ -2,25 +2,50 @@
 /* eslint-disable */
 /**
 */
-export function greet(): void;
+export function set_panic_hook(): void;
 /**
 */
-export function run(): void;
+export class Wheel {
+  free(): void;
+/**
+* @param {number} freq
+* @param {number} motion_blur_size
+* @returns {Wheel}
+*/
+  static new(freq: number, motion_blur_size: number): Wheel;
+/**
+* @param {number} timestamp
+*/
+  update_position(timestamp: number): void;
+/**
+* @param {number} freq
+*/
+  set_freq(freq: number): void;
+/**
+* @returns {number}
+*/
+  get_freq(): number;
+/**
+* @returns {Float32Array}
+*/
+  get_position_buffer(): Float32Array;
+}
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly greet: () => void;
-  readonly run: (a: number) => void;
+  readonly __wbg_wheel_free: (a: number) => void;
+  readonly wheel_new: (a: number, b: number) => number;
+  readonly wheel_update_position: (a: number, b: number) => void;
+  readonly wheel_set_freq: (a: number, b: number) => void;
+  readonly wheel_get_freq: (a: number) => number;
+  readonly wheel_get_position_buffer: (a: number, b: number) => void;
+  readonly set_panic_hook: () => void;
+  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h1a672cc91f0f42f8: (a: number, b: number) => void;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hcaf4bba6dea4f6cd: (a: number, b: number, c: number) => void;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_exn_store: (a: number) => void;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
