@@ -15,6 +15,10 @@ h1 {
 .tuner {
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
+}
+
+button {
+    height: 50px;
+    width: max-content;
 }
