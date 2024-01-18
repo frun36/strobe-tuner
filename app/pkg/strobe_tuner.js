@@ -46,13 +46,29 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+
+let cachedFloat32Memory0 = null;
+
+function getFloat32Memory0() {
+    if (cachedFloat32Memory0 === null || cachedFloat32Memory0.byteLength === 0) {
+        cachedFloat32Memory0 = new Float32Array(wasm.memory.buffer);
+    }
+    return cachedFloat32Memory0;
+}
+
+let WASM_VECTOR_LEN = 0;
+
+function passArrayF32ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 4, 4) >>> 0;
+    getFloat32Memory0().set(arg, ptr / 4);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
 /**
 */
 export function set_panic_hook() {
     wasm.set_panic_hook();
 }
-
-let WASM_VECTOR_LEN = 0;
 
 const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );
 
@@ -117,11 +133,11 @@ function getInt32Memory0() {
 }
 /**
 */
-export class Wheel {
+export class Tuner {
 
     static __wrap(ptr) {
         ptr = ptr >>> 0;
-        const obj = Object.create(Wheel.prototype);
+        const obj = Object.create(Tuner.prototype);
         obj.__wbg_ptr = ptr;
 
         return obj;
@@ -136,41 +152,44 @@ export class Wheel {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_wheel_free(ptr);
+        wasm.__wbg_tuner_free(ptr);
     }
     /**
+    * @param {number} sample_rate
     * @param {number} freq
     * @param {number} motion_blur_size
-    * @returns {Wheel}
+    * @returns {Tuner}
     */
-    static new(freq, motion_blur_size) {
-        const ret = wasm.wheel_new(freq, motion_blur_size);
-        return Wheel.__wrap(ret);
+    static new(sample_rate, freq, motion_blur_size) {
+        const ret = wasm.tuner_new(sample_rate, freq, motion_blur_size);
+        return Tuner.__wrap(ret);
     }
     /**
-    * @param {number} timestamp_ms
+    * @param {Float32Array} input
     */
-    update_position(timestamp_ms) {
-        wasm.wheel_update_position(this.__wbg_ptr, timestamp_ms);
+    process_input(input) {
+        const ptr0 = passArrayF32ToWasm0(input, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.tuner_process_input(this.__wbg_ptr, ptr0, len0);
     }
     /**
     * @param {number} freq
     */
-    set_freq(freq) {
-        wasm.wheel_set_freq(this.__wbg_ptr, freq);
+    set_wheel_freq(freq) {
+        wasm.tuner_set_wheel_freq(this.__wbg_ptr, freq);
     }
     /**
     * @returns {number}
     */
-    get_freq() {
-        const ret = wasm.wheel_get_freq(this.__wbg_ptr);
+    get_wheel_freq() {
+        const ret = wasm.tuner_get_wheel_freq(this.__wbg_ptr);
         return ret;
     }
     /**
     * @returns {any}
     */
-    get_position_buffer() {
-        const ret = wasm.wheel_get_position_buffer(this.__wbg_ptr);
+    get_positions() {
+        const ret = wasm.tuner_get_positions(this.__wbg_ptr);
         return takeObject(ret);
     }
 }
@@ -260,6 +279,7 @@ function __wbg_init_memory(imports, maybe_memory) {
 function __wbg_finalize_init(instance, module) {
     wasm = instance.exports;
     __wbg_init.__wbindgen_wasm_module = module;
+    cachedFloat32Memory0 = null;
     cachedInt32Memory0 = null;
     cachedUint8Memory0 = null;
 

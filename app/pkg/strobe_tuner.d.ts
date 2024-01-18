@@ -5,45 +5,46 @@
 export function set_panic_hook(): void;
 /**
 */
-export class Wheel {
+export class Tuner {
   free(): void;
 /**
+* @param {number} sample_rate
 * @param {number} freq
 * @param {number} motion_blur_size
-* @returns {Wheel}
+* @returns {Tuner}
 */
-  static new(freq: number, motion_blur_size: number): Wheel;
+  static new(sample_rate: number, freq: number, motion_blur_size: number): Tuner;
 /**
-* @param {number} timestamp_ms
+* @param {Float32Array} input
 */
-  update_position(timestamp_ms: number): void;
+  process_input(input: Float32Array): void;
 /**
 * @param {number} freq
 */
-  set_freq(freq: number): void;
+  set_wheel_freq(freq: number): void;
 /**
 * @returns {number}
 */
-  get_freq(): number;
+  get_wheel_freq(): number;
 /**
 * @returns {any}
 */
-  get_position_buffer(): any;
+  get_positions(): any;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_wheel_free: (a: number) => void;
-  readonly wheel_new: (a: number, b: number) => number;
-  readonly wheel_update_position: (a: number, b: number) => void;
-  readonly wheel_set_freq: (a: number, b: number) => void;
-  readonly wheel_get_freq: (a: number) => number;
-  readonly wheel_get_position_buffer: (a: number) => number;
+  readonly __wbg_tuner_free: (a: number) => void;
+  readonly tuner_new: (a: number, b: number, c: number) => number;
+  readonly tuner_process_input: (a: number, b: number, c: number) => void;
+  readonly tuner_set_wheel_freq: (a: number, b: number) => void;
+  readonly tuner_get_wheel_freq: (a: number) => number;
+  readonly tuner_get_positions: (a: number) => number;
   readonly set_panic_hook: () => void;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 }
 

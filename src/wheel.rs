@@ -1,11 +1,7 @@
 use std::f32::consts::PI;
 
-use wasm_bindgen::prelude::*;
-use web_sys::js_sys::Array;
-
 use super::DOMHighResTimestamp;
 
-#[wasm_bindgen]
 pub struct Wheel {
     position_buffer: WheelBuffer,
     // position: f32,
@@ -14,7 +10,6 @@ pub struct Wheel {
     last_timestamp_ms: DOMHighResTimestamp,
 }
 
-#[wasm_bindgen]
 impl Wheel {
     pub fn new(freq: f32, motion_blur_size: usize) -> Self {
         Self {
@@ -55,14 +50,8 @@ impl Wheel {
         self.freq
     }
 
-    pub fn get_position_buffer(&self) -> JsValue {
-        JsValue::from(
-            self.position_buffer
-                .buff
-                .iter()
-                .map(|position| JsValue::from(*position))
-                .collect::<Array>(),
-        )
+    pub fn get_position_buffer(&self) -> Vec<f32> {
+        self.position_buffer.buff.clone()
     }
 
     // pub fn get_position(&self) -> f32 {
