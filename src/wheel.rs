@@ -29,6 +29,7 @@ impl Wheel {
                 new_position -= 2. * PI;
             }
             self.position_buffer.insert(new_position);
+            // gloo_console::log!(new_position);
         } else {
             self.position_buffer.insert(0.);
         }
@@ -50,8 +51,8 @@ impl Wheel {
         self.freq
     }
 
-    pub fn get_position_buffer(&self) -> Vec<f32> {
-        self.position_buffer.buff.clone()
+    pub fn get_position_buffer(&self) -> &[f32] {
+        &self.position_buffer.buff
     }
 
     // pub fn get_position(&self) -> f32 {
