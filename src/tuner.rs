@@ -28,6 +28,8 @@ impl Tuner {
         //     .map(|position| JsValue::from(*position))
         //     .collect::<Array>());
 
+        // gloo_console::log!(input.iter().copied().fold(f32::NEG_INFINITY, f32::max));
+
         // let bright_points: Vec<_> = input
         //     .iter()
         //     .enumerate()
@@ -46,7 +48,7 @@ impl Tuner {
         // }
 
         for (index, sample) in input.iter().enumerate().rev() {
-            if sample.abs() > 0.99 {
+            if sample.abs() > 0.005 {
                 self.wheel
                     .update_position(self.timestamp_ms + index as f64 * 1000. / self.sample_rate);
                 break;
