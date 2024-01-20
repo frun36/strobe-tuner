@@ -8,15 +8,17 @@ pub struct Tuner {
     sample_rate: f64,
     wheel: Wheel,
     timestamp_ms: DOMHighResTimestamp,
+    threshold: f32,
 }
 
 #[wasm_bindgen]
 impl Tuner {
-    pub fn new(sample_rate: f64, freq: f32, motion_blur_size: usize) -> Self {
+    pub fn new(sample_rate: f64, freq: f32, threshold: f32, motion_blur_size: usize) -> Self {
         Self {
             sample_rate,
             wheel: Wheel::new(freq, motion_blur_size),
             timestamp_ms: 0.,
+            threshold,
         }
     }
 
@@ -48,7 +50,7 @@ impl Tuner {
         // }
 
         for (index, sample) in input.iter().enumerate().rev() {
-            if sample.abs() > 0.005 {
+            if sample.abs() > self.threshold {
                 self.wheel
                     .update_position(self.timestamp_ms + index as f64 * 1000. / self.sample_rate);
                 break;
@@ -81,5 +83,9 @@ impl Tuner {
                 .map(|position| JsValue::from(*position))
                 .collect::<Array>(),
         )
+    }
+
+    pub fn set_threshold(&mut self, threshold: f32) {
+        self.threshold = threshold;
     }
 }

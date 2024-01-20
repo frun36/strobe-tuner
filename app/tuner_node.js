@@ -1,6 +1,7 @@
 import { clear, draw_wheel } from "./render.js";
 
 let freqInput = document.getElementById("wheel-frequency");
+let inputLevel = document.getElementById("rms-input-level");
 
 export default class TunerNode extends AudioWorkletNode {
     init(wasmBytes) {
@@ -39,6 +40,9 @@ export default class TunerNode extends AudioWorkletNode {
                 break;
             case "update-freq-value":
                 freqInput.value = msg.newFreq.toFixed(2);
+                break;
+            case "rms-input-level":
+                inputLevel.textContent = "RMS input level: " + msg.level.toFixed(2);
                 break;
             default:
                 console.error(msg.type + " is not a supported message from tuner");

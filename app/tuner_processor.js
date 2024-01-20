@@ -15,7 +15,18 @@ class TunerProcessor extends AudioWorkletProcessor {
         const inputChannels = inputs[0];
         const inputSamples = inputChannels[0];
 
-        // console.log(Math.max(...inputSamples));
+        let level = Math.sqrt(inputSamples.map((x) => x * x).reduce((accumulator, currentValue) => {
+            return accumulator + currentValue
+        }, 0) / inputSamples.length);
+
+        console.log("RMS input level: " + level);
+
+        this.port.postMessage({
+            type: "rms-input-level",
+            level: level,
+        });
+
+        // console.log("Max imput level: " + Math.max(...inputSamples));
 
         this.tuner.process_input(inputSamples);
 
@@ -33,8 +44,8 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "init-tuner":
                 set_panic_hook();
                 const sampleRate = msg.sampleRate;
-                this.tuner = Tuner.new(sampleRate, 55., 8);
-                this.port.postMessage({ type: "update-freq-value", newFreq: 55.})
+                this.tuner = Tuner.new(sampleRate, 55., 0.1, 8);
+                this.port.postMessage({ type: "update-freq-value", newFreq: 55. });
                 break;
             case "get-frame":
                 this.port.postMessage({ type: "draw-wheel", positionBuffer: this.tuner.get_positions() });
@@ -42,6 +53,10 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "set-freq":
                 console.log("New freq: " + msg.newFreq);
                 this.tuner.set_wheel_freq(msg.newFreq);
+                break;
+            case "set-threshold":
+                console.log("New threshold: " + msg.newThreshold);
+                this.tuner.set_threshold(msg.newThreshold);
                 break;
             default:
                 console.error(msg.type + " is not a supported message to tuner");

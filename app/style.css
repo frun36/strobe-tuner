@@ -5,7 +5,8 @@ canvas {
 
 body {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 h1 {
@@ -25,4 +26,10 @@ input[type="number"] {
 input[type=number]::-webkit-inner-spin-button {
     opacity: 1 !important;
     height: 50px;
+}
+
+.audio-visualization {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }

@@ -17,7 +17,13 @@
         <div>
             <label for="wheel-frequency">Wheel frequency (Hz): </label>
             <input type="number" id="wheel-frequency" step="0.01">
+            <br>
+            <label for="threshold">Threshold: </label>
+            <input type="number" id="threshold" value="0.1" min="0." step="0.001" max="1.">
         </div>
+    </div>
+    <div class="audio-visualization">
+        <label id="rms-input-level">RMS input level: 0</label>
     </div>
 </body>
 
