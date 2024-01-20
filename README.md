@@ -1,2 +1,2 @@
 # Strobe tuner
-An attempt to simulate a strobe tuner. Currently it works only with generated pure sine waves - you can change the wheel frequency with provided buttons, and you can see how the wheel drifts depending on the frequency.
+An attempt to simulate a strobe tuner. You can set the wheel spinning frequency, and use your microphone to feed it tones. As of now, it works well enough with pure sine waves, however it has some problems with more complex waveforms. 
