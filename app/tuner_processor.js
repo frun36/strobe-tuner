@@ -44,7 +44,7 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "init-tuner":
                 set_panic_hook();
                 const sampleRate = msg.sampleRate;
-                this.tuner = Tuner.new(sampleRate, 55., 0.1, 8);
+                this.tuner = Tuner.new(sampleRate, 55., 8);
                 this.port.postMessage({ type: "update-freq-value", newFreq: 55. });
                 break;
             case "get-frame":
@@ -53,10 +53,6 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "set-freq":
                 console.log("New freq: " + msg.newFreq);
                 this.tuner.set_wheel_freq(msg.newFreq);
-                break;
-            case "set-threshold":
-                console.log("New threshold: " + msg.newThreshold);
-                this.tuner.set_threshold(msg.newThreshold);
                 break;
             default:
                 console.error(msg.type + " is not a supported message to tuner");

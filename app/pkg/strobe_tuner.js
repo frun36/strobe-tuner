@@ -157,12 +157,11 @@ export class Tuner {
     /**
     * @param {number} sample_rate
     * @param {number} freq
-    * @param {number} threshold
     * @param {number} motion_blur_size
     * @returns {Tuner}
     */
-    static new(sample_rate, freq, threshold, motion_blur_size) {
-        const ret = wasm.tuner_new(sample_rate, freq, threshold, motion_blur_size);
+    static new(sample_rate, freq, motion_blur_size) {
+        const ret = wasm.tuner_new(sample_rate, freq, motion_blur_size);
         return Tuner.__wrap(ret);
     }
     /**
@@ -192,12 +191,6 @@ export class Tuner {
     get_positions() {
         const ret = wasm.tuner_get_positions(this.__wbg_ptr);
         return takeObject(ret);
-    }
-    /**
-    * @param {number} threshold
-    */
-    set_threshold(threshold) {
-        wasm.tuner_set_threshold(this.__wbg_ptr, threshold);
     }
 }
 

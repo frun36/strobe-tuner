@@ -10,11 +10,10 @@ export class Tuner {
 /**
 * @param {number} sample_rate
 * @param {number} freq
-* @param {number} threshold
 * @param {number} motion_blur_size
 * @returns {Tuner}
 */
-  static new(sample_rate: number, freq: number, threshold: number, motion_blur_size: number): Tuner;
+  static new(sample_rate: number, freq: number, motion_blur_size: number): Tuner;
 /**
 * @param {Float32Array} input
 */
@@ -31,10 +30,6 @@ export class Tuner {
 * @returns {any}
 */
   get_positions(): any;
-/**
-* @param {number} threshold
-*/
-  set_threshold(threshold: number): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -42,12 +37,11 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_tuner_free: (a: number) => void;
-  readonly tuner_new: (a: number, b: number, c: number, d: number) => number;
+  readonly tuner_new: (a: number, b: number, c: number) => number;
   readonly tuner_process_input: (a: number, b: number, c: number) => void;
   readonly tuner_set_wheel_freq: (a: number, b: number) => void;
   readonly tuner_get_wheel_freq: (a: number) => number;
   readonly tuner_get_positions: (a: number) => number;
-  readonly tuner_set_threshold: (a: number, b: number) => void;
   readonly set_panic_hook: () => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
