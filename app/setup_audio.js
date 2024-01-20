@@ -9,7 +9,10 @@ async function getWebAudioMediaStream() {
 
     try {
         const result = await window.navigator.mediaDevices.getUserMedia({
-            audio: true,
+            audio: {
+                autoGainControl: false,
+                noiseSuppression: false, 
+            },
             video: false,
         });
         return result;
