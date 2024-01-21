@@ -35,7 +35,7 @@ export default class TunerNode extends AudioWorkletNode {
                 // console.log(msg.positionBuffer);
                 clear();
                 msg.positionBuffer.forEach(position => {
-                    draw_wheel(-position, 0.2);
+                    draw_wheel(-position, 0.01);
                 });
                 break;
             case "update-freq-value":

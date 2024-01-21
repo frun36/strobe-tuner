@@ -3,6 +3,8 @@ use crate::{wheel::Wheel, DOMHighResTimestamp};
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::Array;
 
+use itertools::Itertools;
+
 #[wasm_bindgen]
 pub struct Tuner {
     sample_rate: f64,
@@ -21,8 +23,6 @@ impl Tuner {
     }
 
     pub fn process_input(&mut self, input: &[f32]) {
-        // console::log_1(&format!("Rust code got: {:?}", input).into());
-
         // gloo_console::log!(input
         //     .iter()
         //     .map(|position| JsValue::from(*position))
@@ -30,39 +30,32 @@ impl Tuner {
 
         // gloo_console::log!(input.iter().copied().fold(f32::NEG_INFINITY, f32::max));
 
-        // let bright_points: Vec<_> = input
-        //     .iter()
-        //     .enumerate()
-        //     .filter(|(_index, sample)| {
-        //         // console::log_1(&format!("Unfiltered: {index} {sample}").into());
-        //         (**sample).abs() > 0.99
-        //     })
-        //     .map(|(index, _sample)| {
-        //         self.timestamp_ms + index as f64 * 1000. / self.sample_rate
-        //     })
-        //     .collect();
-
-        // console::log_1(&format!("Bright points: {:?}", bright_points).into());
-        // for curr_timestamp_ms in bright_points {
-        //     self.wheel.update_position(curr_timestamp_ms);
-        // }
-
-        // for (index, sample) in input.iter().enumerate().rev() {
-        //     if sample.abs() > self.threshold {
-        //         self.wheel
-        //             .update_position(self.timestamp_ms + index as f64 * 1000. / self.sample_rate);
-        //         break;
-        //     }
-        // }
-
-        if let Some((index, _)) = input
+        // Find places where the wave changes sign
+        let bright_points: Vec<_> = input
             .iter()
             .enumerate()
-            .max_by(|(_, a), (_, b)| a.abs().total_cmp(&b.abs()))
-        {
-            self.wheel
-                .update_position(self.timestamp_ms + index as f64 * 1000. / self.sample_rate);
+            .tuple_windows::<(_, _)>()
+            .filter(|((_, &sample),( _, &next_sample))| {
+                sample * next_sample <= 0.
+            })
+            .map(|((index, _) , _)| {
+                self.timestamp_ms + (index as f64 + 0.5) * 1000. / self.sample_rate
+            })
+            .collect();
+
+        for curr_timestamp_ms in bright_points {
+            self.wheel.update_position(curr_timestamp_ms);
         }
+
+        // // Find maximum in sample
+        // if let Some((index, _)) = input
+        //     .iter()
+        //     .enumerate()
+        //     .max_by(|(_, a), (_, b)| a.abs().total_cmp(&b.abs()))
+        // {
+        //     self.wheel
+        //         .update_position(self.timestamp_ms + index as f64 * 1000. / self.sample_rate);
+        // }
 
         self.timestamp_ms += input.len() as f64 * 1000. / self.sample_rate;
     }

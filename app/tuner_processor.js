@@ -19,7 +19,7 @@ class TunerProcessor extends AudioWorkletProcessor {
             return accumulator + currentValue
         }, 0) / inputSamples.length);
 
-        console.log("RMS input level: " + level);
+        // console.log("RMS input level: " + level);
 
         this.port.postMessage({
             type: "rms-input-level",
@@ -44,7 +44,7 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "init-tuner":
                 set_panic_hook();
                 const sampleRate = msg.sampleRate;
-                this.tuner = Tuner.new(sampleRate, 55., 8);
+                this.tuner = Tuner.new(sampleRate, 55., 128);
                 this.port.postMessage({ type: "update-freq-value", newFreq: 55. });
                 break;
             case "get-frame":
