@@ -1,4 +1,5 @@
 import TunerNode from "./tuner_node.js";
+import Oscilloscope from "./oscilloscope.js";
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {
@@ -11,7 +12,7 @@ async function getWebAudioMediaStream() {
         const result = await window.navigator.mediaDevices.getUserMedia({
             audio: {
                 autoGainControl: false,
-                noiseSuppression: false, 
+                noiseSuppression: false,
             },
             video: false,
         });
@@ -38,7 +39,9 @@ export async function setupAudio() {
     const context = new window.AudioContext();
     const audioSource = context.createMediaStreamSource(mediaStream);
 
-    let node;
+    let tunerNode;
+    let inputOscilloscopeNode;
+    let outputOscilloscopeNode
 
     try {
         // Fetch the WebAssembly module
@@ -55,18 +58,27 @@ export async function setupAudio() {
             );
         }
 
-        node = new TunerNode(context, "TunerProcessor");
+        inputOscilloscopeNode = new Oscilloscope(context, document.getElementById("input-oscilloscope"), 2048, 4);
 
-        node.init(wasmBytes);
+        tunerNode = new TunerNode(context, "TunerProcessor");
+        tunerNode.init(wasmBytes);
 
-        // Connect the audio source (microphone output) to our analysis node.
-        audioSource.connect(node);
-        node.connect(context.destination);
+        outputOscilloscopeNode = new Oscilloscope(context, document.getElementById("output-oscilloscope"), 2048, 4);
+
+        audioSource.connect(inputOscilloscopeNode);
+        inputOscilloscopeNode.connect(tunerNode);
+        tunerNode.connect(outputOscilloscopeNode);
+        outputOscilloscopeNode.connect(context.destination);
     } catch (err) {
         throw new Error(
             `Failed to load audio analyzer WASM module. Further info: ${err.message}`
         );
     }
 
-    return { context, node };
+    return {
+        context,
+        node: tunerNode,
+        inputOscilloscope: inputOscilloscopeNode,
+        outputOscilloscope: outputOscilloscopeNode
+    };
 }
