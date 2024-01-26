@@ -11,9 +11,7 @@ export class Backlight {
 export class Wheel {
     constructor(canvasCtx) {
         this.canvasCtx = canvasCtx;
-        this.img = new Image;
-        this.img.onload = () => console.log("Loaded wheel image");
-        this.img.src = "./img/wheel.png";
+        this.img = document.getElementById("wheel");
     }
 
     draw(rotation, alpha) {    
