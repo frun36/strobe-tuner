@@ -1,20 +1,31 @@
-const img = new Image();
-img.src = "./img/wheel.png";
-const ctx = document.getElementById("canvas").getContext("2d");
+export class Backlight {
+    constructor(canvasCtx) {
+        this.canvasCtx = canvasCtx;
+    }
 
-export function draw_wheel(rotation, alpha) {    
-    ctx.save();
-
-    ctx.globalAlpha = alpha;
-
-    ctx.translate(200, 200);
-    ctx.rotate(rotation);
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.drawImage(img, -img.width / 2, -img.height / 2);
-
-    ctx.restore();
+    clear() {
+        this.canvasCtx.clearRect(0, 0, 400, 400);
+    }
 }
 
-export function clear() {
-    ctx.clearRect(0, 0, 400, 400);
+export class Wheel {
+    constructor(canvasCtx) {
+        this.canvasCtx = canvasCtx;
+        this.img = new Image;
+        this.img.onload = () => console.log("Loaded wheel image");
+        this.img.src = "./img/wheel.png";
+    }
+
+    draw(rotation, alpha) {    
+        this.canvasCtx.save();
+    
+        this.canvasCtx.globalAlpha = alpha;
+    
+        this.canvasCtx.translate(200, 200);
+        this.canvasCtx.rotate(rotation);
+        this.canvasCtx.globalCompositeOperation = 'source-over';
+        this.canvasCtx.drawImage(this.img, -this.img.width / 2, -this.img.height / 2);
+    
+        this.canvasCtx.restore();
+    }
 }

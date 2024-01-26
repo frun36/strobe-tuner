@@ -1,7 +1,12 @@
-import { clear, draw_wheel } from "./render.js";
+import { Backlight, Wheel } from "./render.js";
 
 let freqInput = document.getElementById("wheel-frequency");
 let inputLevel = document.getElementById("rms-input-level");
+
+const canvasCtx = document.getElementById("canvas").getContext("2d");
+
+const wheel = new Wheel(canvasCtx);
+const backlight = new Backlight(canvasCtx);
 
 export default class TunerNode extends AudioWorkletNode {
     init(wasmBytes) {
@@ -33,9 +38,9 @@ export default class TunerNode extends AudioWorkletNode {
                 break;
             case "draw-wheel":
                 // console.log(msg.positionBuffer);
-                clear();
+                backlight.clear();
                 msg.positionBuffer.forEach(position => {
-                    draw_wheel(-position, 0.01);
+                    wheel.draw(-position, 0.01);
                 });
                 break;
             case "update-freq-value":

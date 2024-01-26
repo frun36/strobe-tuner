@@ -1,8 +1,8 @@
 import { setupAudio } from "./setup_audio.js";
 
-const { context, node, inputOscilloscope, outputOscilloscope } = await setupAudio();
+const { _context, node, inputOscilloscope, outputOscilloscope } = await setupAudio();
 
-function step(timeStamp) {
+function step(_timeStamp) {
     node.port.postMessage({ type: "get-frame" });
 
     inputOscilloscope.draw();
