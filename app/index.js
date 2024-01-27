@@ -2,11 +2,15 @@ import { setupAudio } from "./setup_audio.js";
 import { Backlight, Wheel } from "./render.js";
 import { dBToLinear } from "./utils.js";
 
-function step(_timeStamp) {
+let lastTimeStamp = 0;
+function step(timeStamp) {
     node.port.postMessage({ type: "get-frame" });
 
     inputOscilloscope.draw();
     outputOscilloscope.draw();
+
+    document.getElementById("fps").value = (1000 / (timeStamp - lastTimeStamp)).toFixed(2);
+    lastTimeStamp = timeStamp;
 
     window.requestAnimationFrame(step);
 }
@@ -15,7 +19,7 @@ function UIEventHandler(msg) {
     switch (msg.type) {
         case "draw-wheel":
             // console.log(msg.positionBuffer);
-            backlight.clear();
+            backlight.clear(1);
             msg.positionBuffer.forEach(position => {
                 wheel.draw(-position, 0.01);
             });
@@ -25,7 +29,7 @@ function UIEventHandler(msg) {
             filterToggle.checked = msg.filter;
             break;
         case "rms-input-level":
-            inputLevel.textContent = "RMS input level: " + msg.level.toFixed(2);
+            inputLevel.value = msg.level.toFixed(2);
             break;
         default:
             console.error(msg.type + " is not a supported message from tuner");
