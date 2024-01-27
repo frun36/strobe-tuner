@@ -1,15 +1,7 @@
-import { Backlight, Wheel } from "./render.js";
-
-let freqInput = document.getElementById("wheel-frequency");
-let inputLevel = document.getElementById("rms-input-level");
-
-const canvasCtx = document.getElementById("canvas").getContext("2d");
-
-const wheel = new Wheel(canvasCtx);
-const backlight = new Backlight(canvasCtx);
-
 export default class TunerNode extends AudioWorkletNode {
     init(wasmBytes) {
+        this.UIEventHandler = null;
+
         // Listen to messages sent from the audio processor.
         this.port.onmessage = (event) => this.onmessage(event.data);
 
@@ -36,21 +28,12 @@ export default class TunerNode extends AudioWorkletNode {
                     sampleRate: this.context.sampleRate,
                 });
                 break;
-            case "draw-wheel":
-                // console.log(msg.positionBuffer);
-                backlight.clear();
-                msg.positionBuffer.forEach(position => {
-                    wheel.draw(-position, 0.01);
-                });
-                break;
-            case "update-freq-value":
-                freqInput.value = msg.newFreq.toFixed(2);
-                break;
-            case "rms-input-level":
-                inputLevel.textContent = "RMS input level: " + msg.level.toFixed(2);
-                break;
             default:
-                console.error(msg.type + " is not a supported message from tuner");
+                if (this.UIEventHandler) {
+                    this.UIEventHandler(msg);
+                } else {
+                    console.error(msg.type + " is not a supported message from tuner");
+                }
         }
     }
 }

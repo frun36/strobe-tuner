@@ -1,5 +1,6 @@
 import TunerNode from "./tuner_node.js";
 import Oscilloscope from "./oscilloscope.js";
+import { dBToLinear } from "./utils.js";
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {
@@ -42,6 +43,7 @@ export async function setupAudio() {
     let tunerNode;
     let inputOscilloscopeNode;
     let outputOscilloscopeNode
+    let inputGainNode;
 
     try {
         // Fetch the WebAssembly module
@@ -58,14 +60,25 @@ export async function setupAudio() {
             );
         }
 
-        inputOscilloscopeNode = new Oscilloscope(context, document.getElementById("input-oscilloscope"), 2048, 4);
+        inputGainNode = context.createGain();
+        inputGainNode.gain.value =
+            dBToLinear(document.getElementById("input-gain").value);
+
+        inputOscilloscopeNode = new Oscilloscope(context,
+            document.getElementById("input-oscilloscope"),
+            2048,
+            dBToLinear(document.getElementById("input-oscilloscope-gain").value));
 
         tunerNode = new TunerNode(context, "TunerProcessor");
         tunerNode.init(wasmBytes);
 
-        outputOscilloscopeNode = new Oscilloscope(context, document.getElementById("output-oscilloscope"), 2048, 4);
+        outputOscilloscopeNode = new Oscilloscope(context,
+            document.getElementById("output-oscilloscope"),
+            2048,
+            dBToLinear(document.getElementById("output-oscilloscope-gain").value));
 
-        audioSource.connect(inputOscilloscopeNode);
+        audioSource.connect(inputGainNode);
+        inputGainNode.connect(inputOscilloscopeNode);
         inputOscilloscopeNode.connect(tunerNode);
         tunerNode.connect(outputOscilloscopeNode);
         outputOscilloscopeNode.connect(context.destination);
@@ -78,6 +91,7 @@ export async function setupAudio() {
     return {
         context,
         node: tunerNode,
+        inputGainNode: inputGainNode,
         inputOscilloscope: inputOscilloscopeNode,
         outputOscilloscope: outputOscilloscopeNode
     };

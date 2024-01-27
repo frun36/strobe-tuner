@@ -6,13 +6,15 @@
     <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <script type="module" src="./pkg/strobe_tuner.js" defer></script>
-    <script type="module" src="./main.js" defer></script>
+    <script type="module" src="./index.js" defer></script>
 </head>
 
 <body>
     <img id="wheel" src="./img/wheel.png" style="display: none;">
     <div class="tuner" id="tuner">
         <h1>Strobe tuner</h1>
+        <label for="input-gain">Input gain (dB): </label>
+        <input type="number" id="input-gain" value="0">
         <canvas id="canvas" width="400" height="200"></canvas>
         <div>
             <label for="wheel-frequency">Wheel frequency (Hz): </label>
@@ -21,9 +23,13 @@
     </div>
     <div class="audio-visualization">
         <label id="rms-input-level">RMS input level: 0</label>
-        <p>Input signal:</p>
+
+        <label for="input-oscilloscope-gain">Input oscilloscope gain (dB): </label>
+        <input type="number" id="input-oscilloscope-gain" value="0">
         <canvas id="input-oscilloscope" width="600" height="200"></canvas>
-        <p>Processed signal:</p>
+
+        <label for="output-oscilloscope-gain">Output oscilloscope gain (dB): </label>
+        <input type="number" id="output-oscilloscope-gain" value="0">
         <canvas id="output-oscilloscope" width="600" height="200"></canvas>
     </div>
 </body>
