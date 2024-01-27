@@ -44,6 +44,7 @@ export async function setupAudio() {
     let inputOscilloscopeNode;
     let outputOscilloscopeNode
     let inputGainNode;
+    let muteNode;
 
     try {
         // Fetch the WebAssembly module
@@ -77,11 +78,15 @@ export async function setupAudio() {
             2048,
             dBToLinear(document.getElementById("output-oscilloscope-gain").value));
 
+        muteNode = context.createGain();
+        muteNode.gain.value = 0;
+
         audioSource.connect(inputGainNode);
         inputGainNode.connect(inputOscilloscopeNode);
         inputOscilloscopeNode.connect(tunerNode);
         tunerNode.connect(outputOscilloscopeNode);
-        outputOscilloscopeNode.connect(context.destination);
+        outputOscilloscopeNode.connect(muteNode);
+        muteNode.connect(context.destination);
     } catch (err) {
         throw new Error(
             `Failed to load audio analyzer WASM module. Further info: ${err.message}`

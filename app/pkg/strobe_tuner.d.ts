@@ -16,8 +16,9 @@ export class Tuner {
   static new(sample_rate: number, freq: number, motion_blur_size: number): Tuner;
 /**
 * @param {Float32Array} input
+* @returns {any}
 */
-  process_input(input: Float32Array): void;
+  process_input(input: Float32Array): any;
 /**
 * @param {number} freq
 */
@@ -26,6 +27,10 @@ export class Tuner {
 * @returns {number}
 */
   get_wheel_freq(): number;
+/**
+* @param {boolean} filter_on
+*/
+  toggle_filter(filter_on: boolean): void;
 /**
 * @returns {any}
 */
@@ -38,9 +43,10 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_tuner_free: (a: number) => void;
   readonly tuner_new: (a: number, b: number, c: number) => number;
-  readonly tuner_process_input: (a: number, b: number, c: number) => void;
+  readonly tuner_process_input: (a: number, b: number, c: number) => number;
   readonly tuner_set_wheel_freq: (a: number, b: number) => void;
   readonly tuner_get_wheel_freq: (a: number) => number;
+  readonly tuner_toggle_filter: (a: number, b: number) => void;
   readonly tuner_get_positions: (a: number) => number;
   readonly set_panic_hook: () => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;

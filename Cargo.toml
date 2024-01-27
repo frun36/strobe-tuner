@@ -9,6 +9,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
+biquad = "0.4.2"
 console_error_panic_hook = "0.1.7"
 gloo-console = "0.3.0"
 itertools = "0.12.0"

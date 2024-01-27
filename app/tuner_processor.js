@@ -16,7 +16,7 @@ class TunerProcessor extends AudioWorkletProcessor {
         const inputSamples = inputChannels[0];
 
         let level = Math.sqrt(inputSamples.map((x) => x * x).reduce((accumulator, currentValue) => {
-            return accumulator + currentValue
+            return accumulator + currentValue;
         }, 0) / inputSamples.length);
 
         // console.log("RMS input level: " + level);
@@ -28,8 +28,8 @@ class TunerProcessor extends AudioWorkletProcessor {
 
         // console.log("Max imput level: " + Math.max(...inputSamples));
 
-        this.tuner.process_input(inputSamples);
-
+        let output = this.tuner.process_input(inputSamples);
+        for (let i = 0; i < output.length; i++) outputs[0][0][i] = output[i];
         return true;
     }
 
@@ -45,7 +45,7 @@ class TunerProcessor extends AudioWorkletProcessor {
                 set_panic_hook();
                 const sampleRate = msg.sampleRate;
                 this.tuner = Tuner.new(sampleRate, 55., 128);
-                this.port.postMessage({ type: "update-freq-value", newFreq: 55. });
+                this.port.postMessage({ type: "update-params", newFreq: 55., filter: true });
                 break;
             case "get-frame":
                 this.port.postMessage({ type: "draw-wheel", positionBuffer: this.tuner.get_positions() });
@@ -53,6 +53,10 @@ class TunerProcessor extends AudioWorkletProcessor {
             case "set-freq":
                 console.log("New freq: " + msg.newFreq);
                 this.tuner.set_wheel_freq(msg.newFreq);
+                break;
+            case "toggle-filter":
+                console.log("Filter " + (msg.filter ? "on" : "off"));
+                this.tuner.toggle_filter(msg.filter);
                 break;
             default:
                 console.error(msg.type + " is not a supported message to tuner");

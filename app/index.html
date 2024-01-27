@@ -13,8 +13,15 @@
     <img id="wheel" src="./img/wheel.png" style="display: none;">
     <div class="tuner" id="tuner">
         <h1>Strobe tuner</h1>
-        <label for="input-gain">Input gain (dB): </label>
-        <input type="number" id="input-gain" value="0">
+
+        <div>
+            <label for="input-gain">Input gain (dB): </label>
+            <input type="number" id="input-gain" value="0">
+    
+            <label for="filter">Enable bandpass filter (110 Hz)</label>
+            <input type="checkbox" id="filter">
+        </div>
+
         <canvas id="canvas" width="400" height="200"></canvas>
         <div>
             <label for="wheel-frequency">Wheel frequency (Hz): </label>

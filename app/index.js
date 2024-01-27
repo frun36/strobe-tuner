@@ -20,8 +20,9 @@ function UIEventHandler(msg) {
                 wheel.draw(-position, 0.01);
             });
             break;
-        case "update-freq-value":
+        case "update-params":
             freqInput.value = msg.newFreq.toFixed(2);
+            filterToggle.checked = msg.filter;
             break;
         case "rms-input-level":
             inputLevel.textContent = "RMS input level: " + msg.level.toFixed(2);
@@ -35,8 +36,13 @@ let { _context, node, inputGainNode, inputOscilloscope, outputOscilloscope } = a
 node.UIEventHandler = UIEventHandler;
 
 let freqInput = document.getElementById("wheel-frequency");
+freqInput.oninput = () => node.port.postMessage({ type: "set-freq", newFreq: freqInput.value });
+
 let inputLevel = document.getElementById("rms-input-level");
 let canvasCtx = document.getElementById("canvas").getContext("2d");
+
+let filterToggle = document.getElementById("filter");
+filterToggle.oninput = () => node.port.postMessage({ type: "toggle-filter", filter: filterToggle.checked });
 
 let inputGain = document.getElementById("input-gain");
 inputGain.oninput = () => inputGainNode.gain.value = dBToLinear(inputGain.value);
@@ -49,7 +55,5 @@ outputOscilloscopeGain.onclick = () => outputOscilloscope.gain = dBToLinear(outp
 
 let wheel = new Wheel(canvasCtx);
 let backlight = new Backlight(canvasCtx);
-
-freqInput.oninput = () => node.port.postMessage({ type: "set-freq", newFreq: freqInput.value });
 
 window.requestAnimationFrame(step);

@@ -166,11 +166,13 @@ export class Tuner {
     }
     /**
     * @param {Float32Array} input
+    * @returns {any}
     */
     process_input(input) {
         const ptr0 = passArrayF32ToWasm0(input, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.tuner_process_input(this.__wbg_ptr, ptr0, len0);
+        const ret = wasm.tuner_process_input(this.__wbg_ptr, ptr0, len0);
+        return takeObject(ret);
     }
     /**
     * @param {number} freq
@@ -184,6 +186,12 @@ export class Tuner {
     get_wheel_freq() {
         const ret = wasm.tuner_get_wheel_freq(this.__wbg_ptr);
         return ret;
+    }
+    /**
+    * @param {boolean} filter_on
+    */
+    toggle_filter(filter_on) {
+        wasm.tuner_toggle_filter(this.__wbg_ptr, filter_on);
     }
     /**
     * @returns {any}

@@ -1,5 +1,7 @@
 use crate::{wheel::Wheel, DOMHighResTimestamp};
 
+use biquad::{Biquad, Coefficients, DirectForm1, ToHertz, Type};
+
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::Array;
 
@@ -10,19 +12,33 @@ pub struct Tuner {
     sample_rate: f64,
     wheel: Wheel,
     timestamp_ms: DOMHighResTimestamp,
+    filter: DirectForm1<f32>,
+    filter_on: bool,
 }
 
 #[wasm_bindgen]
 impl Tuner {
     pub fn new(sample_rate: f64, freq: f32, motion_blur_size: usize) -> Self {
+        let coeffs = Coefficients::<f32>::from_params(
+            Type::BandPass,
+            (sample_rate as f32).hz(),
+            110.hz(),
+            8.,
+        )
+        .unwrap();
+
+        let biquad = DirectForm1::<f32>::new(coeffs);
+
         Self {
             sample_rate,
             wheel: Wheel::new(freq, motion_blur_size),
             timestamp_ms: 0.,
+            filter: biquad,
+            filter_on: true,
         }
     }
 
-    pub fn process_input(&mut self, input: &[f32]) {
+    pub fn process_input(&mut self, input: &[f32]) -> JsValue {
         // gloo_console::log!(input
         //     .iter()
         //     .map(|position| JsValue::from(*position))
@@ -31,14 +47,18 @@ impl Tuner {
         // gloo_console::log!(input.iter().copied().fold(f32::NEG_INFINITY, f32::max));
 
         // Find places where the wave changes sign
+
+        let mut input = Vec::from(input);
+        if self.filter_on {
+            input = input.iter().map(|&x| self.filter.run(x)).collect();
+        }
+
         let bright_points: Vec<_> = input
             .iter()
             .enumerate()
             .tuple_windows::<(_, _)>()
-            .filter(|((_, &sample),( _, &next_sample))| {
-                sample * next_sample <= 0.
-            })
-            .map(|((index, _) , _)| {
+            .filter(|((_, &sample), (_, &next_sample))| sample * next_sample <= 0.)
+            .map(|((index, _), _)| {
                 self.timestamp_ms + (index as f64 + 0.5) * 1000. / self.sample_rate
             })
             .collect();
@@ -58,6 +78,13 @@ impl Tuner {
         // }
 
         self.timestamp_ms += input.len() as f64 * 1000. / self.sample_rate;
+
+        JsValue::from(
+            input
+                .iter()
+                .map(|&sample| JsValue::from(sample))
+                .collect::<Array>(),
+        )
     }
 
     pub fn set_wheel_freq(&mut self, freq: f32) {
@@ -66,6 +93,10 @@ impl Tuner {
 
     pub fn get_wheel_freq(&self) -> f32 {
         self.wheel.get_freq()
+    }
+
+    pub fn toggle_filter(&mut self, filter_on: bool) {
+        self.filter_on = filter_on;
     }
 
     pub fn get_positions(&self) -> JsValue {
