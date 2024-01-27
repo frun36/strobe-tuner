@@ -4,7 +4,7 @@ export default class Oscilloscope extends AnalyserNode {
         this.fftSize = fftSize;
 
         this.bufferLength = this.frequencyBinCount;
-        this.dataArray = new Uint8Array(this.bufferLength);
+        this.dataArray = new Float32Array(this.bufferLength);
 
         this.canvas = canvas;
         this.canvasCtx = this.canvas.getContext("2d");
@@ -13,7 +13,7 @@ export default class Oscilloscope extends AnalyserNode {
     }
 
     draw() {
-        this.getByteTimeDomainData(this.dataArray);
+        this.getFloatTimeDomainData(this.dataArray);
 
         this.canvasCtx.fillStyle = "rgb(0, 0, 0)";
         this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -27,8 +27,7 @@ export default class Oscilloscope extends AnalyserNode {
         let x = 0;
 
         for (let i = 0; i < this.bufferLength; i++) {
-            const v = this.dataArray[i] / 128.0 - 1;
-            const y = v * this.gain * this.canvas.height * 0.5 + this.canvas.height * 0.5;
+            const y = this.dataArray[i] * this.gain * this.canvas.height * 0.5 + this.canvas.height * 0.5;
 
             if (i === 0) {
                 this.canvasCtx.moveTo(x, y);
