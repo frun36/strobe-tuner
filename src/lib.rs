@@ -2,8 +2,9 @@ use std::panic;
 
 use wasm_bindgen::prelude::*;
 
-mod wheel;
+mod buffer;
 mod tuner;
+mod wheel;
 
 type DOMHighResTimestamp = f64;
 

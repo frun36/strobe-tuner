@@ -1,9 +1,10 @@
 use std::f32::consts::PI;
 
-use super::DOMHighResTimestamp;
+use crate::buffer::Buffer;
+use crate::DOMHighResTimestamp;
 
 pub struct Wheel {
-    position_buffer: WheelBuffer,
+    position_buffer: Buffer<f32>,
     // position: f32,
     freq: f32,
     omega: f32,
@@ -13,7 +14,7 @@ pub struct Wheel {
 impl Wheel {
     pub fn new(freq: f32, motion_blur_size: usize) -> Self {
         Self {
-            position_buffer: WheelBuffer::new(motion_blur_size),
+            position_buffer: Buffer::new(motion_blur_size),
             // position: 0.,
             freq,
             omega: 2. * PI * freq,
@@ -23,7 +24,7 @@ impl Wheel {
 
     pub fn update_position(&mut self, timestamp_ms: DOMHighResTimestamp) {
         let elapsed_ms = timestamp_ms - self.last_timestamp_ms;
-        if let Some(last_position) = self.position_buffer.get_last() {
+        if let Some(&last_position) = self.position_buffer.get_last() {
             let mut new_position = last_position + self.omega * elapsed_ms as f32 * 0.001;
             while new_position > 2. * PI {
                 new_position -= 2. * PI;
@@ -52,43 +53,10 @@ impl Wheel {
     }
 
     pub fn get_position_buffer(&self) -> &[f32] {
-        &self.position_buffer.buff
+        self.position_buffer.get_contents()
     }
 
     // pub fn get_position(&self) -> f32 {
     //     self.position
     // }
-}
-
-struct WheelBuffer {
-    buff: Vec<f32>,
-    begin: usize,
-}
-
-impl WheelBuffer {
-    fn new(capacity: usize) -> Self {
-        Self {
-            buff: Vec::with_capacity(capacity),
-            begin: 0,
-        }
-    }
-
-    fn insert(&mut self, position: f32) {
-        if self.buff.len() < self.buff.capacity() {
-            self.buff.push(position);
-        } else {
-            self.buff[self.begin] = position;
-            self.begin = (self.begin + 1) % self.buff.capacity();
-        }
-    }
-
-    fn get_last(&self) -> Option<f32> {
-        if self.buff.is_empty() {
-            None
-        } else if self.begin == 0 {
-            Some(self.buff[self.buff.len() - 1])
-        } else {
-            Some(self.buff[self.begin - 1])
-        }
-    }
 }
