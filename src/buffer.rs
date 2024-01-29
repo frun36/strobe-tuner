@@ -69,6 +69,7 @@ mod tests {
         buff.insert(7);
 
         assert_eq!(buff.get_contents_ordered(), [5, 6, 7]);
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
     }
 
     #[test]
@@ -79,10 +80,12 @@ mod tests {
         buff.insert_slice(&[3, 4]);
 
         assert_eq!(buff.get_contents_ordered(), [2, 3, 4]);
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
 
         buff.insert_slice(&[5, 6, 7, 8]);
 
         assert_eq!(buff.get_contents_ordered(), [6, 7, 8]);
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
     }
 
     #[test]
@@ -90,13 +93,19 @@ mod tests {
         let mut buff = Buffer::new(3);
         buff.insert(1);
         buff.insert(2);
+
+        assert_eq!(buff.get_contents(), buff.get_contents());
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
+
         buff.insert(3);
 
         assert_eq!(buff.get_contents(), buff.get_contents());
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
 
         buff.insert(4);
 
         assert_eq!(buff.get_contents(), [4, 2, 3]);
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
 
         let mut buff = Buffer::new(5);
 
@@ -113,5 +122,6 @@ mod tests {
         buff.insert(11);
 
         assert_eq!(buff.get_contents(), [11, 7, 8, 9, 10]);
+        assert_eq!(buff.buffer.capacity(), buff.capacity);
     }
 }
