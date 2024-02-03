@@ -43,20 +43,14 @@ class TunerProcessor extends AudioWorkletProcessor {
                 break;
             case "init-tuner":
                 set_panic_hook();
-                const sampleRate = msg.sampleRate;
-                this.tuner = Tuner.new(sampleRate, 55., 128);
-                this.port.postMessage({ type: "update-params", newFreq: 55., filter: true });
+                this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 128, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
             case "get-frame":
                 this.port.postMessage({ type: "draw-wheel", positionBuffer: this.tuner.get_positions() });
                 break;
-            case "set-freq":
-                console.log("New freq: " + msg.newFreq);
-                this.tuner.set_wheel_freq(msg.newFreq);
-                break;
-            case "toggle-filter":
-                console.log("Filter " + (msg.filter ? "on" : "off"));
-                this.tuner.toggle_filter(msg.filter);
+            case "update-params":
+                console.log(msg);
+                this.tuner.update_params(msg.wheelFrequency, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
             default:
                 console.error(msg.type + " is not a supported message to tuner");

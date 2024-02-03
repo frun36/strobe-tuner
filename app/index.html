@@ -17,9 +17,6 @@
         <div>
             <label for="input-gain">Input gain (dB): </label>
             <input type="number" id="input-gain" value="0">
-
-            <label for="filter">Enable bandpass filter (110 Hz)</label>
-            <input type="checkbox" id="filter">
         </div>
 
         <canvas id="canvas" width="400" height="200"></canvas>
@@ -28,10 +25,22 @@
             <output id="fps">0</output>
         </div>
 
-        <div>
+        <form id="frequency-settings">
             <label for="wheel-frequency">Wheel frequency (Hz): </label>
-            <input type="number" id="wheel-frequency" step="0.01">
-        </div>
+            <input type="number" id="wheel-frequency" min="0.0" step="0.01" value="55.00">
+            <br>
+            <label for="filter">Enable bandpass filter</label>
+            <input type="checkbox" id="filter-on">
+            <br>
+            <label for="filter-octave">Filter octave: </label>
+            <input type="number" id="filter-octave" min="1" value="4" max="7">
+            <label for="filter-frequency">Filter frequency: </label>
+            <output id="filter-frequency"></output>
+            <br>
+            <label for="filter-q">Filter q: </label>
+            <input type="number" id="filter-q" min="0.1" value="8.0" step="0.1">
+            <br>
+        </form>
     </div>
     <div class="audio-visualization">
         <label for="rms-input-level">RMS input level: </label>

@@ -11,18 +11,17 @@ export class Tuner {
 * @param {number} sample_rate
 * @param {number} freq
 * @param {number} motion_blur_size
+* @param {boolean} filter_on
+* @param {number} filter_octave
+* @param {number} filter_q
 * @returns {Tuner}
 */
-  static new(sample_rate: number, freq: number, motion_blur_size: number): Tuner;
+  static new(sample_rate: number, freq: number, motion_blur_size: number, filter_on: boolean, filter_octave: number, filter_q: number): Tuner;
 /**
 * @param {Float32Array} input
 * @returns {any}
 */
   process_input(input: Float32Array): any;
-/**
-* @param {number} freq
-*/
-  set_wheel_freq(freq: number): void;
 /**
 * @returns {number}
 */
@@ -35,6 +34,13 @@ export class Tuner {
 * @returns {any}
 */
   get_positions(): any;
+/**
+* @param {number} wheel_frequency
+* @param {boolean} filter_on
+* @param {number} filter_octave
+* @param {number} filter_q
+*/
+  update_params(wheel_frequency: number, filter_on: boolean, filter_octave: number, filter_q: number): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -42,12 +48,12 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_tuner_free: (a: number) => void;
-  readonly tuner_new: (a: number, b: number, c: number) => number;
+  readonly tuner_new: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly tuner_process_input: (a: number, b: number, c: number) => number;
-  readonly tuner_set_wheel_freq: (a: number, b: number) => void;
   readonly tuner_get_wheel_freq: (a: number) => number;
   readonly tuner_toggle_filter: (a: number, b: number) => void;
   readonly tuner_get_positions: (a: number) => number;
+  readonly tuner_update_params: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly set_panic_hook: () => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;

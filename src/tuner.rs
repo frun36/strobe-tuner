@@ -14,18 +14,26 @@ pub struct Tuner {
     timestamp_ms: DOMHighResTimestamp,
     filter: DirectForm1<f32>,
     filter_on: bool,
+    filter_octave: usize,
 }
 
 #[wasm_bindgen]
 impl Tuner {
-    pub fn new(sample_rate: f64, freq: f32, motion_blur_size: usize) -> Self {
+    pub fn new(
+        sample_rate: f64,
+        freq: f32,
+        motion_blur_size: usize,
+        filter_on: bool,
+        filter_octave: usize,
+        filter_q: f32,
+    ) -> Self {
         let coeffs = Coefficients::<f32>::from_params(
             Type::BandPass,
             (sample_rate as f32).hz(),
-            110.hz(),
-            8.,
+            (freq * f32::powi(2., filter_octave as i32 - 1)).hz(),
+            filter_q,
         )
-        .unwrap();
+        .expect("Invalid filter parameters");
 
         let biquad = DirectForm1::<f32>::new(coeffs);
 
@@ -34,7 +42,8 @@ impl Tuner {
             wheel: Wheel::new(freq, motion_blur_size),
             timestamp_ms: 0.,
             filter: biquad,
-            filter_on: true,
+            filter_on,
+            filter_octave,
         }
     }
 
@@ -87,10 +96,6 @@ impl Tuner {
         )
     }
 
-    pub fn set_wheel_freq(&mut self, freq: f32) {
-        self.wheel.set_freq(freq);
-    }
-
     pub fn get_wheel_freq(&self) -> f32 {
         self.wheel.get_freq()
     }
@@ -114,5 +119,29 @@ impl Tuner {
                 .map(|position| JsValue::from(*position))
                 .collect::<Array>(),
         )
+    }
+
+    pub fn update_params(
+        &mut self,
+        wheel_frequency: f32,
+        filter_on: bool,
+        filter_octave: usize,
+        filter_q: f32,
+    ) {
+        self.timestamp_ms = 0.;
+
+        self.wheel.set_freq(wheel_frequency);
+        self.filter_octave = filter_octave;
+        self.filter_on = filter_on;
+
+        let coeffs = Coefficients::<f32>::from_params(
+            Type::BandPass,
+            (self.sample_rate as f32).hz(),
+            (wheel_frequency * f32::powi(2., filter_octave as i32 - 1)).hz(),
+            filter_q,
+        )
+        .expect("Invalid filter parameters");
+
+        self.filter.replace_coefficients(coeffs);
     }
 }

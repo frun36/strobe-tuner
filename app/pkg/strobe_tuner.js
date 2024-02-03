@@ -158,10 +158,13 @@ export class Tuner {
     * @param {number} sample_rate
     * @param {number} freq
     * @param {number} motion_blur_size
+    * @param {boolean} filter_on
+    * @param {number} filter_octave
+    * @param {number} filter_q
     * @returns {Tuner}
     */
-    static new(sample_rate, freq, motion_blur_size) {
-        const ret = wasm.tuner_new(sample_rate, freq, motion_blur_size);
+    static new(sample_rate, freq, motion_blur_size, filter_on, filter_octave, filter_q) {
+        const ret = wasm.tuner_new(sample_rate, freq, motion_blur_size, filter_on, filter_octave, filter_q);
         return Tuner.__wrap(ret);
     }
     /**
@@ -173,12 +176,6 @@ export class Tuner {
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.tuner_process_input(this.__wbg_ptr, ptr0, len0);
         return takeObject(ret);
-    }
-    /**
-    * @param {number} freq
-    */
-    set_wheel_freq(freq) {
-        wasm.tuner_set_wheel_freq(this.__wbg_ptr, freq);
     }
     /**
     * @returns {number}
@@ -199,6 +196,15 @@ export class Tuner {
     get_positions() {
         const ret = wasm.tuner_get_positions(this.__wbg_ptr);
         return takeObject(ret);
+    }
+    /**
+    * @param {number} wheel_frequency
+    * @param {boolean} filter_on
+    * @param {number} filter_octave
+    * @param {number} filter_q
+    */
+    update_params(wheel_frequency, filter_on, filter_octave, filter_q) {
+        wasm.tuner_update_params(this.__wbg_ptr, wheel_frequency, filter_on, filter_octave, filter_q);
     }
 }
 

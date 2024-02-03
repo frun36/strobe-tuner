@@ -26,7 +26,7 @@ function UIEventHandler(msg) {
             break;
         case "update-params":
             freqInput.value = msg.newFreq.toFixed(2);
-            filterToggle.checked = msg.filter;
+            filterOn.checked = msg.filter;
             break;
         case "rms-input-level":
             inputLevel.value = msg.level.toFixed(2);
@@ -40,13 +40,30 @@ let { _context, node, inputGainNode, inputOscilloscope, outputOscilloscope } = a
 node.UIEventHandler = UIEventHandler;
 
 let freqInput = document.getElementById("wheel-frequency");
-freqInput.oninput = () => node.port.postMessage({ type: "set-freq", newFreq: freqInput.value });
+
+let filterOn = document.getElementById("filter-on");
+
+let filterOctave = document.getElementById("filter-octave");
+
+let filterQ = document.getElementById("filter-q");
+
+let settings = document.getElementById("frequency-settings").elements;
+for(let i = 0; i < settings.length; i++) {
+    settings[i].oninput = () => {
+        document.getElementById("filter-frequency").value = (freqInput.value * Math.pow(2, filterOctave.value - 1)).toFixed(2);
+        node.port.postMessage({
+            type: "update-params",
+            wheelFrequency: freqInput.value,
+            filterOn: filterOn.checked,
+            filterOctave: filterOctave.value,
+            filterQ: filterQ.value,
+        });
+    };
+}
+
 
 let inputLevel = document.getElementById("rms-input-level");
 let canvasCtx = document.getElementById("canvas").getContext("2d");
-
-let filterToggle = document.getElementById("filter");
-filterToggle.oninput = () => node.port.postMessage({ type: "toggle-filter", filter: filterToggle.checked });
 
 let inputGain = document.getElementById("input-gain");
 inputGain.oninput = () => inputGainNode.gain.value = dBToLinear(inputGain.value);
@@ -60,4 +77,5 @@ outputOscilloscopeGain.onclick = () => outputOscilloscope.gain = dBToLinear(outp
 let wheel = new Wheel(canvasCtx);
 let backlight = new Backlight(canvasCtx);
 
+document.getElementById("filter-frequency").value = (freqInput.value * Math.pow(2, filterOctave.value - 1)).toFixed(2);
 window.requestAnimationFrame(step);
