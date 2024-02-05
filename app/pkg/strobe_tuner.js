@@ -46,6 +46,11 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+/**
+*/
+export function set_panic_hook() {
+    wasm.set_panic_hook();
+}
 
 let cachedFloat32Memory0 = null;
 
@@ -63,11 +68,6 @@ function passArrayF32ToWasm0(arg, malloc) {
     getFloat32Memory0().set(arg, ptr / 4);
     WASM_VECTOR_LEN = arg.length;
     return ptr;
-}
-/**
-*/
-export function set_panic_hook() {
-    wasm.set_panic_hook();
 }
 
 const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );
@@ -196,6 +196,13 @@ export class Tuner {
     get_positions() {
         const ret = wasm.tuner_get_positions(this.__wbg_ptr);
         return takeObject(ret);
+    }
+    /**
+    * @returns {number}
+    */
+    get_last_pitch() {
+        const ret = wasm.tuner_get_last_pitch(this.__wbg_ptr);
+        return ret;
     }
     /**
     * @param {number} wheel_frequency

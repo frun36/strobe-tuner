@@ -1,4 +1,4 @@
-use crate::{wheel::Wheel, DOMHighResTimestamp};
+use crate::{analyser::Analyser, wheel::Wheel, DOMHighResTimestamp};
 
 use biquad::{Biquad, Coefficients, DirectForm1, ToHertz, Type};
 
@@ -11,6 +11,7 @@ use itertools::Itertools;
 pub struct Tuner {
     sample_rate: f64,
     wheel: Wheel,
+    input_analyser: Analyser,
     timestamp_ms: DOMHighResTimestamp,
     filter: DirectForm1<f32>,
     filter_on: bool,
@@ -40,6 +41,7 @@ impl Tuner {
         Self {
             sample_rate,
             wheel: Wheel::new(freq, motion_blur_size),
+            input_analyser: Analyser::new(sample_rate, 2048, true),
             timestamp_ms: 0.,
             filter: biquad,
             filter_on,
@@ -55,13 +57,14 @@ impl Tuner {
 
         // gloo_console::log!(input.iter().copied().fold(f32::NEG_INFINITY, f32::max));
 
-        // Find places where the wave changes sign
+        self.input_analyser.update_buffer(input);
 
         let mut input = Vec::from(input);
         if self.filter_on {
             input = input.iter().map(|&x| self.filter.run(x)).collect();
         }
 
+        // Find places where the wave changes sign
         let bright_points: Vec<_> = input
             .iter()
             .enumerate()
@@ -119,6 +122,10 @@ impl Tuner {
                 .map(|position| JsValue::from(*position))
                 .collect::<Array>(),
         )
+    }
+
+    pub fn get_last_pitch(&self) -> f32 {
+        self.input_analyser.get_last_pitch().unwrap_or(0.)
     }
 
     pub fn update_params(

@@ -17,16 +17,13 @@ function step(timeStamp) {
 
 function UIEventHandler(msg) {
     switch (msg.type) {
-        case "draw-wheel":
+        case "draw-frame":
             // console.log(msg.positionBuffer);
             backlight.clear(1);
             msg.positionBuffer.forEach(position => {
                 wheel.draw(-position, 0.01);
             });
-            break;
-        case "update-params":
-            freqInput.value = msg.newFreq.toFixed(2);
-            filterOn.checked = msg.filter;
+            inputPitch.value = msg.pitch.toFixed(2);
             break;
         case "rms-input-level":
             inputLevel.value = msg.level.toFixed(2);
@@ -48,7 +45,7 @@ let filterOctave = document.getElementById("filter-octave");
 let filterQ = document.getElementById("filter-q");
 
 let settings = document.getElementById("frequency-settings").elements;
-for(let i = 0; i < settings.length; i++) {
+for (let i = 0; i < settings.length; i++) {
     settings[i].oninput = () => {
         document.getElementById("filter-frequency").value = (freqInput.value * Math.pow(2, filterOctave.value - 1)).toFixed(2);
         node.port.postMessage({
@@ -61,6 +58,7 @@ for(let i = 0; i < settings.length; i++) {
     };
 }
 
+let inputPitch = document.getElementById("input-pitch");
 
 let inputLevel = document.getElementById("rms-input-level");
 let canvasCtx = document.getElementById("canvas").getContext("2d");

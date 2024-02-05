@@ -35,6 +35,10 @@ export class Tuner {
 */
   get_positions(): any;
 /**
+* @returns {number}
+*/
+  get_last_pitch(): number;
+/**
 * @param {number} wheel_frequency
 * @param {boolean} filter_on
 * @param {number} filter_octave
@@ -47,14 +51,15 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly set_panic_hook: () => void;
   readonly __wbg_tuner_free: (a: number) => void;
   readonly tuner_new: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly tuner_process_input: (a: number, b: number, c: number) => number;
   readonly tuner_get_wheel_freq: (a: number) => number;
   readonly tuner_toggle_filter: (a: number, b: number) => void;
   readonly tuner_get_positions: (a: number) => number;
+  readonly tuner_get_last_pitch: (a: number) => number;
   readonly tuner_update_params: (a: number, b: number, c: number, d: number, e: number) => void;
-  readonly set_panic_hook: () => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

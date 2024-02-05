@@ -2,6 +2,7 @@ use std::panic;
 
 use wasm_bindgen::prelude::*;
 
+mod analyser;
 mod buffer;
 mod tuner;
 mod wheel;
