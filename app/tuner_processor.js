@@ -28,7 +28,7 @@ class TunerProcessor extends AudioWorkletProcessor {
 
         // console.log("Max imput level: " + Math.max(...inputSamples));
 
-        let output = this.tuner.process_input(inputSamples);
+        let output = this.tuner ? this.tuner.process_input(inputSamples) : inputSamples;
         for (let i = 0; i < output.length; i++) outputs[0][0][i] = output[i];
         return true;
     }
