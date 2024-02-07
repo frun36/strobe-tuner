@@ -54,4 +54,8 @@ impl Analyser {
     pub fn get_last_pitch(&self) -> Option<f32> {
         self.last_pitch
     }
+
+    pub fn get_buffer(&mut self) -> &[f32] {
+        self.buffer.get_contents_ordered()
+    }
 }

@@ -45,6 +45,10 @@ export class Tuner {
 * @param {number} filter_q
 */
   update_params(wheel_frequency: number, filter_on: boolean, filter_octave: number, filter_q: number): void;
+/**
+* @returns {any}
+*/
+  get_input_buffer(): any;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -60,6 +64,7 @@ export interface InitOutput {
   readonly tuner_get_positions: (a: number) => number;
   readonly tuner_get_last_pitch: (a: number) => number;
   readonly tuner_update_params: (a: number, b: number, c: number, d: number, e: number) => void;
+  readonly tuner_get_input_buffer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

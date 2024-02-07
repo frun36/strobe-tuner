@@ -151,4 +151,14 @@ impl Tuner {
 
         self.filter.replace_coefficients(coeffs);
     }
+
+    pub fn get_input_buffer(&mut self) -> JsValue {
+        JsValue::from(
+            self.input_analyser
+                .get_buffer()
+                .iter()
+                .map(|&sample| JsValue::from(sample))
+                .collect::<Array>(),
+        )
+    }
 }

@@ -65,27 +65,15 @@ export async function setupAudio() {
         inputGainNode.gain.value =
             dBToLinear(document.getElementById("input-gain").value);
 
-        inputOscilloscopeNode = new Oscilloscope(context,
-            document.getElementById("input-oscilloscope"),
-            2048,
-            dBToLinear(document.getElementById("input-oscilloscope-gain").value));
-
         tunerNode = new TunerNode(context, "TunerProcessor");
         tunerNode.init(wasmBytes);
-
-        outputOscilloscopeNode = new Oscilloscope(context,
-            document.getElementById("output-oscilloscope"),
-            2048,
-            dBToLinear(document.getElementById("output-oscilloscope-gain").value));
 
         muteNode = context.createGain();
         muteNode.gain.value = 0;
 
         audioSource.connect(inputGainNode);
-        inputGainNode.connect(inputOscilloscopeNode);
-        inputOscilloscopeNode.connect(tunerNode);
-        tunerNode.connect(outputOscilloscopeNode);
-        outputOscilloscopeNode.connect(muteNode);
+        inputGainNode.connect(tunerNode);
+        tunerNode.connect(muteNode);
         muteNode.connect(context.destination);
     } catch (err) {
         throw new Error(
@@ -97,7 +85,5 @@ export async function setupAudio() {
         context,
         node: tunerNode,
         inputGainNode: inputGainNode,
-        inputOscilloscope: inputOscilloscopeNode,
-        outputOscilloscope: outputOscilloscopeNode
     };
 }

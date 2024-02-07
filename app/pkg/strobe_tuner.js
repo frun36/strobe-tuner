@@ -213,6 +213,13 @@ export class Tuner {
     update_params(wheel_frequency, filter_on, filter_octave, filter_q) {
         wasm.tuner_update_params(this.__wbg_ptr, wheel_frequency, filter_on, filter_octave, filter_q);
     }
+    /**
+    * @returns {any}
+    */
+    get_input_buffer() {
+        const ret = wasm.tuner_get_input_buffer(this.__wbg_ptr);
+        return takeObject(ret);
+    }
 }
 
 async function __wbg_load(module, imports) {

@@ -46,8 +46,12 @@ class TunerProcessor extends AudioWorkletProcessor {
                 this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 128, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
             case "get-frame":
+                if (!this.tuner) {
+                    break;
+                }
                 this.port.postMessage({
                     type: "draw-frame",
+                    inputBuffer: this.tuner.get_input_buffer(),
                     positionBuffer: this.tuner.get_positions(),
                     pitch: this.tuner.get_last_pitch(),
                 });

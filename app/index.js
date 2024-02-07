@@ -1,13 +1,11 @@
 import { setupAudio } from "./setup_audio.js";
 import { Backlight, Wheel } from "./render.js";
 import { dBToLinear } from "./utils.js";
+import Oscilloscope from "./oscilloscope.js";
 
 let lastTimeStamp = 0;
 function step(timeStamp) {
     node.port.postMessage({ type: "get-frame" });
-
-    inputOscilloscope.draw();
-    outputOscilloscope.draw();
 
     document.getElementById("fps").value = (1000 / (timeStamp - lastTimeStamp)).toFixed(2);
     lastTimeStamp = timeStamp;
@@ -18,12 +16,13 @@ function step(timeStamp) {
 function UIEventHandler(msg) {
     switch (msg.type) {
         case "draw-frame":
-            // console.log(msg.positionBuffer);
+            // console.log(msg.inputBuffer);
             backlight.clear(1);
             msg.positionBuffer.forEach(position => {
                 wheel.draw(-position, 0.01);
             });
             inputPitch.value = msg.pitch.toFixed(2);
+            inputOscilloscope.draw(msg.inputBuffer);
             break;
         case "rms-input-level":
             inputLevel.value = msg.level.toFixed(2);
@@ -33,7 +32,7 @@ function UIEventHandler(msg) {
     }
 }
 
-let { _context, node, inputGainNode, inputOscilloscope, outputOscilloscope } = await setupAudio();
+let { _context, node, inputGainNode } = await setupAudio();
 node.UIEventHandler = UIEventHandler;
 
 let freqInput = document.getElementById("wheel-frequency");
@@ -68,6 +67,8 @@ inputGain.oninput = () => inputGainNode.gain.value = dBToLinear(inputGain.value)
 
 let inputOscilloscopeGain = document.getElementById("input-oscilloscope-gain");
 inputOscilloscopeGain.onclick = () => inputOscilloscope.gain = dBToLinear(inputOscilloscopeGain.value);
+
+let inputOscilloscope = new Oscilloscope(document.getElementById("input-oscilloscope"), dBToLinear(inputOscilloscopeGain.value));
 
 let outputOscilloscopeGain = document.getElementById("output-oscilloscope-gain");
 outputOscilloscopeGain.onclick = () => outputOscilloscope.gain = dBToLinear(outputOscilloscopeGain.value);
