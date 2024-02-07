@@ -23,6 +23,7 @@ function UIEventHandler(msg) {
             });
             inputPitch.value = msg.pitch.toFixed(2);
             inputOscilloscope.draw(msg.inputBuffer);
+            outputOscilloscope.draw(msg.outputBuffer);
             break;
         case "rms-input-level":
             inputLevel.value = msg.level.toFixed(2);
@@ -67,11 +68,11 @@ inputGain.oninput = () => inputGainNode.gain.value = dBToLinear(inputGain.value)
 
 let inputOscilloscopeGain = document.getElementById("input-oscilloscope-gain");
 inputOscilloscopeGain.onclick = () => inputOscilloscope.gain = dBToLinear(inputOscilloscopeGain.value);
-
 let inputOscilloscope = new Oscilloscope(document.getElementById("input-oscilloscope"), dBToLinear(inputOscilloscopeGain.value));
 
 let outputOscilloscopeGain = document.getElementById("output-oscilloscope-gain");
 outputOscilloscopeGain.onclick = () => outputOscilloscope.gain = dBToLinear(outputOscilloscopeGain.value);
+let outputOscilloscope = new Oscilloscope(document.getElementById("output-oscilloscope"), dBToLinear(outputOscilloscopeGain.value));
 
 let wheel = new Wheel(canvasCtx);
 let backlight = new Backlight(canvasCtx);

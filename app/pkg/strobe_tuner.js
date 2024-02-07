@@ -214,10 +214,17 @@ export class Tuner {
         wasm.tuner_update_params(this.__wbg_ptr, wheel_frequency, filter_on, filter_octave, filter_q);
     }
     /**
-    * @returns {any}
+    * @returns {Float32Array}
     */
     get_input_buffer() {
         const ret = wasm.tuner_get_input_buffer(this.__wbg_ptr);
+        return takeObject(ret);
+    }
+    /**
+    * @returns {Float32Array}
+    */
+    get_output_buffer() {
+        const ret = wasm.tuner_get_output_buffer(this.__wbg_ptr);
         return takeObject(ret);
     }
 }

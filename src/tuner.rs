@@ -3,7 +3,7 @@ use crate::{analyser::Analyser, wheel::Wheel, DOMHighResTimestamp};
 use biquad::{Biquad, Coefficients, DirectForm1, ToHertz, Type};
 
 use wasm_bindgen::prelude::*;
-use web_sys::js_sys::Array;
+use web_sys::js_sys::{Array, Float32Array};
 
 use itertools::Itertools;
 
@@ -16,6 +16,7 @@ pub struct Tuner {
     filter: DirectForm1<f32>,
     filter_on: bool,
     filter_octave: usize,
+    output_analyser: Analyser,
 }
 
 #[wasm_bindgen]
@@ -46,6 +47,7 @@ impl Tuner {
             filter: biquad,
             filter_on,
             filter_octave,
+            output_analyser: Analyser::new(sample_rate, 2048, true),
         }
     }
 
@@ -54,8 +56,6 @@ impl Tuner {
         //     .iter()
         //     .map(|position| JsValue::from(*position))
         //     .collect::<Array>());
-
-        // gloo_console::log!(input.iter().copied().fold(f32::NEG_INFINITY, f32::max));
 
         self.input_analyser.update_buffer(input);
 
@@ -90,6 +90,8 @@ impl Tuner {
         // }
 
         self.timestamp_ms += input.len() as f64 * 1000. / self.sample_rate;
+
+        self.output_analyser.update_buffer(&input);
 
         JsValue::from(
             input
@@ -152,13 +154,23 @@ impl Tuner {
         self.filter.replace_coefficients(coeffs);
     }
 
-    pub fn get_input_buffer(&mut self) -> JsValue {
+    pub fn get_input_buffer(&mut self) -> Float32Array {
         JsValue::from(
             self.input_analyser
                 .get_buffer()
                 .iter()
                 .map(|&sample| JsValue::from(sample))
                 .collect::<Array>(),
-        )
+        ).into()
+    }
+
+    pub fn get_output_buffer(&mut self) -> Float32Array {
+        JsValue::from(
+            self.output_analyser
+                .get_buffer()
+                .iter()
+                .map(|&sample| JsValue::from(sample))
+                .collect::<Array>(),
+        ).into()
     }
 }
