@@ -1,7 +1,7 @@
-import { setupAudio } from "./setup_audio.js";
+import { setupAudio } from "./setupAudio.js";
 import { Backlight, Wheel } from "./render.js";
 import { dBToLinear } from "./utils.js";
-import Oscilloscope from "./oscilloscope.js";
+import Oscilloscope from "./Oscilloscope.js";
 
 let lastTimeStamp = 0;
 function step(timeStamp) {

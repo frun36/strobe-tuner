@@ -1,5 +1,5 @@
-import TunerNode from "./tuner_node.js";
-import Oscilloscope from "./oscilloscope.js";
+import TunerNode from "./TunerNode.js";
+import Oscilloscope from "./Oscilloscope.js";
 import { dBToLinear } from "./utils.js";
 
 async function getWebAudioMediaStream() {
@@ -41,8 +41,6 @@ export async function setupAudio() {
     const audioSource = context.createMediaStreamSource(mediaStream);
 
     let tunerNode;
-    let inputOscilloscopeNode;
-    let outputOscilloscopeNode
     let inputGainNode;
     let muteNode;
 
@@ -52,7 +50,7 @@ export async function setupAudio() {
         const wasmBytes = await response.arrayBuffer();
 
         // Add our audio processor worklet to the context.
-        const processorUrl = "tuner_processor.js";
+        const processorUrl = "TunerProcessor.js";
         try {
             await context.audioWorklet.addModule(processorUrl);
         } catch (e) {
