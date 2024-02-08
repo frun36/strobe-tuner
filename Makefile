@@ -1,6 +1,8 @@
 build:
-	wasm-pack build wasm --target web --out-dir ../app/pkg
+	wasm-pack build wasm --target web --out-dir ../pkg
+	npm run build
 
 run:
-	wasm-pack build wasm --target web --out-dir ../app/pkg
-	python -m http.server --directory app
+	wasm-pack build wasm --target web --out-dir ../pkg
+	npm run build
+	python -m http.server --directory dist

@@ -19,3 +19,14 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 pub fn set_panic_hook() {
     panic::set_hook(Box::new(console_error_panic_hook::hook));
 }
+
+
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn greet() {
+    alert("Helou");
+}

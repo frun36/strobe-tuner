@@ -1,5 +1,5 @@
 import TunerNode from "./TunerNode.js";
-import { dBToLinear } from "./utils.js";
+import { dBToLinear } from "../utils/utils.js";
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {

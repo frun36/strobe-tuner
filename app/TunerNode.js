@@ -17,7 +17,7 @@ export default class TunerNode extends AudioWorkletNode {
         console.log(
             `An error from AudioWorkletProcessor.process() occurred: ${err}`
         );
-    };
+    }
 
     onmessage(msg) {
         // console.log("Main got message type: " + msg.type);
