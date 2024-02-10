@@ -4,6 +4,7 @@ import TunerDisplay from "./components/TunerDisplay"
 import Oscilloscope from "./components/Oscilloscope";
 import Settings from "./components/Settings";
 import { dBToLinear } from "./utils/utils";
+import wheelImageUrl from "/wheel.png?url";
 
 export default function App() {
     const [tunerNode, setAudioNode] = useState(null);
@@ -72,7 +73,7 @@ export default function App() {
         flexDirection: "column",
         alignItems: "center",
     }}>
-        <img ref={imgRef} src={"/wheel.png"} style={{ display: "none" }} />
+        <img ref={imgRef} src={wheelImageUrl} style={{ display: "none" }} />
         <h1>Strobe tuner</h1>
         <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
         <Settings updater={updateSettings} defaultSettings={defaultSettings} />
