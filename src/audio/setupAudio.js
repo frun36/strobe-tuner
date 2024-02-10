@@ -78,8 +78,7 @@ export async function setupAudio() {
     }
 
     return {
-        context,
-        node: tunerNode,
+        tunerNode: tunerNode,
         inputGainNode: inputGainNode,
     };
 }

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { setupAudio } from "/src/audio/setupAudio";
-import Tuner from "/src/components/Tuner"
+import { setupAudio } from "./audio/setupAudio";
+import Tuner from "./components/Tuner"
 import Oscilloscope from "./components/Oscilloscope";
+import Settings from "./components/Settings";
+import { dBToLinear } from "./utils/utils";
 
-function App() {
-    const [audioContext, setAudioContext] = useState(null);
-    const [audioNode, setAudioNode] = useState(null);
+export default function App() {
+    const [tunerNode, setAudioNode] = useState(null);
     const [inputGainNode, setInputGainNode] = useState(null);
 
     const imgRef = useRef(null);
@@ -17,11 +18,30 @@ function App() {
         pitch: [],
     });
 
+    const defaultSettings = {
+        inputGain: 0,
+        wheelFrequency: 55.00,
+        filterOn: true,
+        filterOctave: 4,
+        filterQ: 8.,
+    };
+
+    const updateSettings = (settings) => {
+        tunerNode.port.postMessage({
+            type: "update-settings",
+            wheelFrequency: settings.wheelFrequency,
+            filterOn: settings.filterOn,
+            filterOctave: settings.filterOctave,
+            filterQ: settings.filterQ,
+        });
+
+        inputGainNode.gain.value = dBToLinear(settings.inputGain);
+    }
 
     useEffect(() => {
         const awaitSetupAudio = async () => {
-            const { context, node, inputGainNode } = await setupAudio();
-            node.UIEventHandler = (msg) => {
+            const { tunerNode, inputGainNode } = await setupAudio();
+            tunerNode.UIEventHandler = (msg) => {
                 switch (msg.type) {
                     case "frame":
                         // console.log(msg.frame);
@@ -31,8 +51,7 @@ function App() {
                         console.error(msg.type + " is not a supported message from tuner");
                 }
             };
-            setAudioContext(context);
-            setAudioNode(node);
+            setAudioNode(tunerNode);
             setInputGainNode(inputGainNode);
         }
         awaitSetupAudio();
@@ -40,21 +59,20 @@ function App() {
 
     useEffect(() => {
         function step() {
-            audioNode && audioNode.port.postMessage({ type: "get-frame" });
+            tunerNode && tunerNode.port.postMessage({ type: "get-frame" });
 
             window.requestAnimationFrame(step);
         }
         window.requestAnimationFrame(step);
-    }, [audioNode]);
+    }, [tunerNode]);
 
 
     return <>
         <img ref={imgRef} src={"/wheel.png"} style={{ display: "none" }} />
         <h1>Strobe tuner</h1>
         <Tuner positionBuffer={frame.positionBuffer} img={imgRef.current} />
+        <Settings updater={updateSettings} defaultSettings={defaultSettings} />
         <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
         <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
     </>
 }
-
-export default App

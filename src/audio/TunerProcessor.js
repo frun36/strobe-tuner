@@ -49,7 +49,7 @@ class TunerProcessor extends AudioWorkletProcessor {
                     }
                 });
                 break;
-            case "update-params":
+            case "update-settings":
                 console.log(msg);
                 this.tuner.update_params(msg.wheelFrequency, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
