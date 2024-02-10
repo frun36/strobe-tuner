@@ -1,5 +1,7 @@
 import TunerNode from "./TunerNode.js";
 import { dBToLinear } from "../utils/utils.js";
+import processorUrl from "./TunerProcessor.js?worker&url"
+import wasmUrl from "/pkg/strobe_tuner_bg.wasm?url"
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {
@@ -45,11 +47,10 @@ export async function setupAudio() {
 
     try {
         // Fetch the WebAssembly module
-        const response = await window.fetch("/pkg/strobe_tuner_bg.wasm");
+        const response = await window.fetch(wasmUrl);
         const wasmBytes = await response.arrayBuffer();
 
         // Add our audio processor worklet to the context.
-        const processorUrl = "/src/audio/TunerProcessor.js";
         try {
             await context.audioWorklet.addModule(processorUrl);
         } catch (e) {
