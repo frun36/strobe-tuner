@@ -1,7 +1,7 @@
 import TunerNode from "./TunerNode.js";
 import { dBToLinear } from "../utils/utils.js";
 import processorUrl from "./TunerProcessor.js?worker&url"
-import wasmUrl from "/pkg/strobe_tuner_bg.wasm?url"
+import wasmUrl from "/wasm/pkg/strobe_tuner_bg.wasm?url"
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {

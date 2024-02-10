@@ -1,5 +1,5 @@
 import "../utils/TextEncoder.js";
-import init, { Tuner, set_panic_hook } from "/pkg/strobe_tuner.js";
+import init, { Tuner, set_panic_hook } from "/wasm/pkg/strobe_tuner.js";
 
 class TunerProcessor extends AudioWorkletProcessor {
     constructor() {
