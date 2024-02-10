@@ -1,6 +1,7 @@
 import TunerNode from "./TunerNode.js";
-import Oscilloscope from "./Oscilloscope.js";
-import { dBToLinear } from "./utils.js";
+import { dBToLinear } from "../utils/utils.js";
+import processorUrl from "./TunerProcessor.js?worker&url"
+import wasmUrl from "/pkg/strobe_tuner_bg.wasm?url"
 
 async function getWebAudioMediaStream() {
     if (!window.navigator.mediaDevices) {
@@ -46,11 +47,10 @@ export async function setupAudio() {
 
     try {
         // Fetch the WebAssembly module
-        const response = await window.fetch("pkg/strobe_tuner_bg.wasm");
+        const response = await window.fetch(wasmUrl);
         const wasmBytes = await response.arrayBuffer();
 
         // Add our audio processor worklet to the context.
-        const processorUrl = "TunerProcessor.js";
         try {
             await context.audioWorklet.addModule(processorUrl);
         } catch (e) {
@@ -60,8 +60,7 @@ export async function setupAudio() {
         }
 
         inputGainNode = context.createGain();
-        inputGainNode.gain.value =
-            dBToLinear(document.getElementById("input-gain").value);
+        inputGainNode.gain.value = dBToLinear(0);
 
         tunerNode = new TunerNode(context, "TunerProcessor");
         tunerNode.init(wasmBytes);
@@ -80,8 +79,7 @@ export async function setupAudio() {
     }
 
     return {
-        context,
-        node: tunerNode,
+        tunerNode: tunerNode,
         inputGainNode: inputGainNode,
     };
 }

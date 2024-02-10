@@ -17,7 +17,7 @@ export default class TunerNode extends AudioWorkletNode {
         console.log(
             `An error from AudioWorkletProcessor.process() occurred: ${err}`
         );
-    };
+    }
 
     onmessage(msg) {
         // console.log("Main got message type: " + msg.type);
@@ -26,10 +26,10 @@ export default class TunerNode extends AudioWorkletNode {
                 this.port.postMessage({
                     type: "init-tuner",
                     sampleRate: this.context.sampleRate,
-                    wheelFrequency: document.getElementById("wheel-frequency").value,
-                    filterOn: document.getElementById("filter-on").checked,
-                    filterOctave: document.getElementById("filter-octave").value,
-                    filterQ: document.getElementById("filter-q").value,
+                    wheelFrequency: 55,
+                    filterOn: true,
+                    filterOctave: 4,
+                    filterQ: 8,
                 });
                 break;
             default:
