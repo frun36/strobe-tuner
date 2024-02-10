@@ -21,12 +21,12 @@ pub fn set_panic_hook() {
 }
 
 
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
+// #[wasm_bindgen]
+// extern {
+//     fn alert(s: &str);
+// }
 
-#[wasm_bindgen]
-pub fn greet() {
-    alert("Helou");
-}
+// #[wasm_bindgen]
+// pub fn greet() {
+//     alert("Helou");
+// }

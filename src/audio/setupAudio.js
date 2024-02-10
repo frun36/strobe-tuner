@@ -45,11 +45,11 @@ export async function setupAudio() {
 
     try {
         // Fetch the WebAssembly module
-        const response = await window.fetch("pkg/strobe_tuner_bg.wasm");
+        const response = await window.fetch("/pkg/strobe_tuner_bg.wasm");
         const wasmBytes = await response.arrayBuffer();
 
         // Add our audio processor worklet to the context.
-        const processorUrl = "TunerProcessor.js";
+        const processorUrl = "/src/audio/TunerProcessor.js";
         try {
             await context.audioWorklet.addModule(processorUrl);
         } catch (e) {
@@ -59,8 +59,7 @@ export async function setupAudio() {
         }
 
         inputGainNode = context.createGain();
-        inputGainNode.gain.value =
-            dBToLinear(document.getElementById("input-gain").value);
+        inputGainNode.gain.value = dBToLinear(0);
 
         tunerNode = new TunerNode(context, "TunerProcessor");
         tunerNode.init(wasmBytes);

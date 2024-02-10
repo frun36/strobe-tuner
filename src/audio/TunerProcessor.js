@@ -1,5 +1,5 @@
-import "./TextEncoder.js"
-import init, { Tuner, set_panic_hook } from "./pkg/strobe_tuner.js"
+import "../utils/TextEncoder.js"
+import init, { Tuner, set_panic_hook } from "/pkg/strobe_tuner.js"
 
 class TunerProcessor extends AudioWorkletProcessor {
     constructor() {
@@ -15,17 +15,6 @@ class TunerProcessor extends AudioWorkletProcessor {
     process(inputs, outputs) {
         const inputChannels = inputs[0];
         const inputSamples = inputChannels[0];
-
-        let level = Math.sqrt(inputSamples.map((x) => x * x).reduce((accumulator, currentValue) => {
-            return accumulator + currentValue;
-        }, 0) / inputSamples.length);
-
-        // console.log("RMS input level: " + level);
-
-        this.port.postMessage({
-            type: "rms-input-level",
-            level: level,
-        });
 
         // console.log("Max imput level: " + Math.max(...inputSamples));
 
@@ -51,11 +40,13 @@ class TunerProcessor extends AudioWorkletProcessor {
                     break;
                 }
                 this.port.postMessage({
-                    type: "draw-frame",
-                    inputBuffer: this.tuner.get_input_buffer(),
-                    outputBuffer: this.tuner.get_output_buffer(),
-                    positionBuffer: this.tuner.get_positions(),
-                    pitch: this.tuner.get_last_pitch(),
+                    type: "frame",
+                    frame: {
+                        inputBuffer: this.tuner.get_input_buffer(),
+                        outputBuffer: this.tuner.get_output_buffer(),
+                        positionBuffer: this.tuner.get_positions(),
+                        pitch: this.tuner.get_last_pitch(),
+                    }
                 });
                 break;
             case "update-params":
