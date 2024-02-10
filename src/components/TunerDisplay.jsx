@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function Tuner({ img, positionBuffer, pitch }) {
+export default function TunerDisplay({ img, positionBuffer, pitch }) {
     const canvasRef = useRef(null);
 
     useEffect(() => {

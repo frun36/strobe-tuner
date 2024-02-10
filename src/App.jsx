@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { setupAudio } from "./audio/setupAudio";
-import Tuner from "./components/Tuner"
+import TunerDisplay from "./components/TunerDisplay"
 import Oscilloscope from "./components/Oscilloscope";
 import Settings from "./components/Settings";
 import { dBToLinear } from "./utils/utils";
@@ -74,7 +74,7 @@ export default function App() {
     }}>
         <img ref={imgRef} src={"/wheel.png"} style={{ display: "none" }} />
         <h1>Strobe tuner</h1>
-        <Tuner img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
+        <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
         <Settings updater={updateSettings} defaultSettings={defaultSettings} />
         <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
         <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
