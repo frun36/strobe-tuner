@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function Tuner({ positionBuffer, img }) {
+export default function Tuner({ img, positionBuffer, pitch }) {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -27,7 +27,13 @@ export default function Tuner({ positionBuffer, img }) {
         });
     }, [positionBuffer, img])
 
-    return <>
+    return <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+    }}>
         <canvas ref={canvasRef} width="400" height="200" />
-    </>
+        <label htmlFor="inputFrequency">Pitch (Hz): </label>
+        <output id="inputFrequency">{ pitch.toFixed(2) }</output>
+    </div>
 }

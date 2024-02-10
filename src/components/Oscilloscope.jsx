@@ -38,9 +38,13 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         canvasCtx.stroke();
     }, [buffer]);
 
-    return <>
+    return <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+    }}>
         <label htmlFor="inputGain">{gainLabel}</label>
         <input ref={inputGainRef} id="inputGain" type="number" defaultValue={0} />
         <canvas ref={canvasRef} width={600} height={200} />
-    </>
+    </div>
 }

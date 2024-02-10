@@ -15,7 +15,7 @@ export default function App() {
         inputBuffer: [],
         outputBuffer: [],
         positionBuffer: [],
-        pitch: [],
+        pitch: 0.,
     });
 
     const defaultSettings = {
@@ -67,12 +67,16 @@ export default function App() {
     }, [tunerNode]);
 
 
-    return <>
+    return <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+    }}>
         <img ref={imgRef} src={"/wheel.png"} style={{ display: "none" }} />
         <h1>Strobe tuner</h1>
-        <Tuner positionBuffer={frame.positionBuffer} img={imgRef.current} />
+        <Tuner img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
         <Settings updater={updateSettings} defaultSettings={defaultSettings} />
         <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
         <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
-    </>
+    </div>
 }
