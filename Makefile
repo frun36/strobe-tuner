@@ -4,8 +4,7 @@ build:
 
 run:
 	wasm-pack build wasm --target web --out-dir ../pkg
-	npm run build
-	python -m http.server --directory dist
+	npm run preview
 
 dev:
 	wasm-pack build wasm --target web --out-dir ../pkg
