@@ -79,7 +79,7 @@ export default function App() {
                 <Col xs={0} lg={3}></Col>
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
-                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} />
+                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} desiredPitch={currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1)} />
                     <Settings updater={setCurrentSettings} defaultSettings={defaultSettings} />
                     <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
                     <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />

@@ -1,6 +1,6 @@
 import { useRef } from "react"
 
-import { Form, InputGroup, Row, Col } from "react-bootstrap";
+import { Form, Row, Col } from "react-bootstrap";
 
 export default function Settings({ updater, defaultSettings }) {
     const inputGainRef = useRef(null);

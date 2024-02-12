@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Row } from "react-bootstrap";
+import TunerHelper from "./TunerHelper";
 
-export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega }) {
+export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega, desiredPitch }) {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -24,7 +25,7 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
 
         setBacklight(1);
         positionBuffer.forEach(position => {
-            drawWheel(-position, 0.25);
+            drawWheel(-position, 0.06);
         });
     }, [positionBuffer, img])
 
@@ -42,6 +43,9 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
         <Row>
             <label htmlFor="apparentOmega">Apparent wheel angular velocity (wildly inaccurate): </label>
             <output id="apparentOmega">{(apparentOmega.toFixed(2))}</output>
+        </Row>
+        <Row>
+            <TunerHelper pitch={pitch} desiredPitch={desiredPitch} />
         </Row>
     </div>
 }

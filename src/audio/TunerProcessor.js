@@ -33,7 +33,7 @@ class TunerProcessor extends AudioWorkletProcessor {
                 break;
             case "init-tuner":
                 set_panic_hook();
-                this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 8, msg.filterOn, msg.filterOctave, msg.filterQ);
+                this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 32, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
             case "get-frame":
                 if (!this.tuner) {
