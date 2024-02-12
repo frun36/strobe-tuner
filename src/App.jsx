@@ -19,6 +19,7 @@ export default function App() {
         outputBuffer: [],
         positionBuffer: [],
         pitch: 0.,
+        apparentOmega: 0.,
     });
 
     const defaultSettings = {
@@ -77,7 +78,7 @@ export default function App() {
                 <Col xs={0} lg={3}></Col>
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
-                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
+                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} />
                     <Settings updater={updateSettings} defaultSettings={defaultSettings} />
                     <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
                     <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />

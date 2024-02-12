@@ -33,12 +33,13 @@ class TunerProcessor extends AudioWorkletProcessor {
                 break;
             case "init-tuner":
                 set_panic_hook();
-                this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 128, msg.filterOn, msg.filterOctave, msg.filterQ);
+                this.tuner = Tuner.new(msg.sampleRate, msg.wheelFrequency, 8, msg.filterOn, msg.filterOctave, msg.filterQ);
                 break;
             case "get-frame":
                 if (!this.tuner) {
                     break;
                 }
+                // console.log(this.tuner.get_apparent_omega(), this.tuner.get_positions()[0] % Math.PI * Math.pow(2, -3));
                 this.port.postMessage({
                     type: "frame",
                     frame: {
@@ -46,6 +47,7 @@ class TunerProcessor extends AudioWorkletProcessor {
                         outputBuffer: this.tuner.get_output_buffer(),
                         positionBuffer: this.tuner.get_positions(),
                         pitch: this.tuner.get_last_pitch(),
+                        apparentOmega: this.tuner.get_apparent_omega(),
                     }
                 });
                 break;
