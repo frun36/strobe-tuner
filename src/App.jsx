@@ -6,7 +6,7 @@ import Settings from "./components/Settings";
 import { dBToLinear } from "./utils/utils";
 import wheelImageUrl from "/wheel.png?url";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Accordion } from "react-bootstrap";
 
 export default function App() {
     const defaultSettings = {
@@ -80,9 +80,21 @@ export default function App() {
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
                     <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} desiredPitch={currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1)} />
-                    <Settings updater={setCurrentSettings} defaultSettings={defaultSettings} />
-                    <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
-                    <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
+                    <Accordion defaultActiveKey={["0"]} alwaysOpen>
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header>Frequency settings</Accordion.Header>
+                            <Accordion.Body>
+                                <Settings updater={setCurrentSettings} defaultSettings={defaultSettings} />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        <Accordion.Item eventKey="1">
+                            <Accordion.Header>Signal analysis</Accordion.Header>
+                            <Accordion.Body>
+                                <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
+                                <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
                 </Col>
                 <Col xs={0} lg={3}></Col>
             </Row>

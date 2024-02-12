@@ -39,7 +39,7 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         canvasCtx.stroke();
     }, [buffer]);
 
-    return <div className="my-4">
+    return <div className="my-2">
         <Row className="my-2">
             <Form.Group>
                 <Row>
