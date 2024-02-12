@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use crate::{analyser::Analyser, wheel::Wheel, DOMHighResTimestamp};
 
 use biquad::{Biquad, Coefficients, DirectForm1, ToHertz, Type};
@@ -39,9 +41,15 @@ impl Tuner {
 
         let biquad = DirectForm1::<f32>::new(coeffs);
 
+        gloo_console::log!("Creating tuner with params: ", sample_rate, freq, motion_blur_size, filter_on, filter_octave, filter_q);
+
         Self {
             sample_rate,
-            wheel: Wheel::new(freq, motion_blur_size),
+            wheel: Wheel::new(
+                freq,
+                motion_blur_size,
+                PI * 2.0_f32.powi(-(filter_octave as i32 - 1)),
+            ),
             input_analyser: Analyser::new(sample_rate, 2048, true),
             timestamp_ms: 0.,
             filter: biquad,
@@ -105,10 +113,6 @@ impl Tuner {
         self.wheel.get_freq()
     }
 
-    pub fn toggle_filter(&mut self, filter_on: bool) {
-        self.filter_on = filter_on;
-    }
-
     pub fn get_positions(&self) -> JsValue {
         // console::log_1(
         //     &format!(
@@ -126,6 +130,10 @@ impl Tuner {
         )
     }
 
+    pub fn get_apparent_omega(&self) -> f32 {
+        self.wheel.get_apparent_omega()
+    }
+
     pub fn get_last_pitch(&self) -> f32 {
         self.input_analyser.get_last_pitch().unwrap_or(0.)
     }
@@ -140,6 +148,8 @@ impl Tuner {
         self.timestamp_ms = 0.;
 
         self.wheel.set_freq(wheel_frequency);
+        self.wheel
+            .set_full_rotation_angle(PI * 2.0_f32.powi(-(filter_octave as i32 - 1)));
         self.filter_octave = filter_octave;
         self.filter_on = filter_on;
 
@@ -161,7 +171,8 @@ impl Tuner {
                 .iter()
                 .map(|&sample| JsValue::from(sample))
                 .collect::<Array>(),
-        ).into()
+        )
+        .into()
     }
 
     pub fn get_output_buffer(&mut self) -> Float32Array {
@@ -171,6 +182,7 @@ impl Tuner {
                 .iter()
                 .map(|&sample| JsValue::from(sample))
                 .collect::<Array>(),
-        ).into()
+        )
+        .into()
     }
 }
