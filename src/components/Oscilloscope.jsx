@@ -49,7 +49,9 @@ export default function Oscilloscope({ buffer, gainLabel }) {
             </Form.Group>
         </Row>
         <Row>
-            <canvas ref={canvasRef} width={600} height={200} />
+            <canvas ref={canvasRef} width={600} height={200} style={{
+                padding: "0px",
+            }} />
         </Row>
     </div>
 }

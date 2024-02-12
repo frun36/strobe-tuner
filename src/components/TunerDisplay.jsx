@@ -30,7 +30,10 @@ export default function TunerDisplay({ img, positionBuffer, pitch }) {
 
     return <div className="my-4 text-center">
         <Row>
-            <canvas ref={canvasRef} width="400" height="200" />
+            <canvas ref={canvasRef} width="400" height="200" style={{
+                borderRadius: "10px",
+                padding: "0px",
+            }} />
         </Row>
         <Row>
             <label htmlFor="inputFrequency">Pitch (Hz): </label>
