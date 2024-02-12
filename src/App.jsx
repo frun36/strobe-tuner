@@ -9,8 +9,17 @@ import wheelImageUrl from "/wheel.png?url";
 import { Container, Row, Col } from "react-bootstrap";
 
 export default function App() {
+    const defaultSettings = {
+        inputGain: 0,
+        wheelFrequency: 55.00,
+        filterOn: true,
+        filterOctave: 4,
+        filterQ: 8.,
+    };
+
     const [tunerNode, setAudioNode] = useState(null);
     const [inputGainNode, setInputGainNode] = useState(null);
+    const [currentSettings, setCurrentSettings] = useState(defaultSettings);
 
     const imgRef = useRef(null);
 
@@ -22,25 +31,17 @@ export default function App() {
         apparentOmega: 0.,
     });
 
-    const defaultSettings = {
-        inputGain: 0,
-        wheelFrequency: 55.00,
-        filterOn: true,
-        filterOctave: 4,
-        filterQ: 8.,
-    };
-
-    const updateSettings = (settings) => {
-        tunerNode.port.postMessage({
+    useEffect(() => {
+        tunerNode && tunerNode.port.postMessage({
             type: "update-settings",
-            wheelFrequency: settings.wheelFrequency,
-            filterOn: settings.filterOn,
-            filterOctave: settings.filterOctave,
-            filterQ: settings.filterQ,
+            wheelFrequency: currentSettings.wheelFrequency,
+            filterOn: currentSettings.filterOn,
+            filterOctave: currentSettings.filterOctave,
+            filterQ: currentSettings.filterQ,
         });
 
-        inputGainNode.gain.value = dBToLinear(settings.inputGain);
-    }
+        inputGainNode && (inputGainNode.gain.value = dBToLinear(currentSettings.inputGain));
+    }, [currentSettings, tunerNode, inputGainNode]);
 
     useEffect(() => {
         const awaitSetupAudio = async () => {
@@ -79,7 +80,7 @@ export default function App() {
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
                     <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} />
-                    <Settings updater={updateSettings} defaultSettings={defaultSettings} />
+                    <Settings updater={setCurrentSettings} defaultSettings={defaultSettings} />
                     <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
                     <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
                 </Col>
