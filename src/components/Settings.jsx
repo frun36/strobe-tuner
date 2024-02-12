@@ -1,5 +1,7 @@
 import { useRef } from "react"
 
+import { Form, InputGroup, Row, Col } from "react-bootstrap";
+
 export default function Settings({ updater, defaultSettings }) {
     const inputGainRef = useRef(null);
     const wheelFrequencyRef = useRef(null);
@@ -23,41 +25,52 @@ export default function Settings({ updater, defaultSettings }) {
         });
     }
 
-    return <div style={{
-        display: "flex",
-        flexDirection: "column"
-    }}>
-        <span>
-            <label htmlFor="inputGain">Input gain (dB): </label>
-            <input ref={inputGainRef} type="number" id="inputGain" defaultValue={defaultSettings.inputGain} onChange={changeHandler} />
-        </span>
+    return <Form>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Input gain (dB): </Form.Label></Col>
+                <Col><Form.Control ref={inputGainRef} type="number" defaultValue={defaultSettings.inputGain} onChange={changeHandler} /></Col>
+            </Row>
+        </Form.Group>
 
-        <span>
-            <label htmlFor="wheelFrequency">Wheel frequency (Hz): </label>
-            <input ref={wheelFrequencyRef} type="number" id="wheelFrequency" min={0.0} step={0.01} defaultValue={defaultSettings.wheelFrequency} onChange={changeHandler} />
-        </span>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Wheel frequency (Hz): </Form.Label></Col>
+                <Col><Form.Control ref={wheelFrequencyRef} type="number" min={0.0} step={0.01} defaultValue={defaultSettings.wheelFrequency} onChange={changeHandler} /></Col>
+            </Row>
+        </Form.Group>
 
-        <span>
-            <label htmlFor="filterOn">Enable bandpass filter</label>
-            <input ref={filterOnRef} type="checkbox" id="filterOn" defaultChecked={defaultSettings.filterOn} onChange={changeHandler} />
-        </span>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Enable bandpass filter</Form.Label></Col>
+                <Col><Form.Check ref={filterOnRef} type="switch" defaultChecked={defaultSettings.filterOn} onChange={changeHandler} /></Col>
+            </Row>
+        </Form.Group>
 
-        <span>
-            <label htmlFor="filterOctave">Filter octave: </label>
-            <input ref={filterOctaveRef} type="number" id="filterOctave" min={1} defaultValue={defaultSettings.filterOctave} max={7} onChange={changeHandler} />
-            <label htmlFor="filterFrequency">Filter frequency: </label>
-            <output id="filterFrequency">
-                {
-                    (wheelFrequencyRef.current && filterOctaveRef.current ?
-                        (wheelFrequencyRef.current.value * Math.pow(2, filterOctaveRef.current.value - 1)).toFixed(2) :
-                        (defaultSettings.wheelFrequency * Math.pow(2, defaultSettings.filterOctave - 1)).toFixed(2)) + " Hz"
-                }
-            </output>
-        </span>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Filter octave: </Form.Label></Col>
+                <Col><Form.Control ref={filterOctaveRef} type="number" min={1} defaultValue={defaultSettings.filterOctave} max={7} onChange={changeHandler} /></Col>
+            </Row>
+        </Form.Group>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Filter frequency:  </Form.Label></Col>
+                <Col><Form.Text as="out">
+                    {
+                        (wheelFrequencyRef.current && filterOctaveRef.current ?
+                            (wheelFrequencyRef.current.value * Math.pow(2, filterOctaveRef.current.value - 1)).toFixed(2) :
+                            (defaultSettings.wheelFrequency * Math.pow(2, defaultSettings.filterOctave - 1)).toFixed(2)) + " Hz"
+                    }
+                </Form.Text></Col>
+            </Row>
+        </Form.Group>
 
-        <span>
-            <label htmlFor="filterQ">Filter q: </label>
-            <input ref={filterQRef} type="number" id="filterQ" min={0.1} defaultValue={defaultSettings.filterQ} step={0.1} onChange={changeHandler} />
-        </span>
-    </div>
+        <Form.Group>
+            <Row>
+                <Col><Form.Label>Filter q: </Form.Label></Col>
+                <Col><Form.Control ref={filterQRef} type="number" min={0.1} defaultValue={defaultSettings.filterQ} step={0.1} onChange={changeHandler} /></Col>
+            </Row>
+        </Form.Group>
+    </Form >
 }

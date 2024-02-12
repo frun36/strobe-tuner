@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import { dBToLinear } from "/src/utils/utils.js";
+import { Form, Row, Col } from "react-bootstrap";
 
 export default function Oscilloscope({ buffer, gainLabel }) {
     const inputGainRef = useRef(null);
@@ -38,13 +39,17 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         canvasCtx.stroke();
     }, [buffer]);
 
-    return <div style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-    }}>
-        <label htmlFor="inputGain">{gainLabel}</label>
-        <input ref={inputGainRef} id="inputGain" type="number" defaultValue={0} />
-        <canvas ref={canvasRef} width={600} height={200} />
+    return <div className="my-4">
+        <Row className="my-2">
+            <Form.Group>
+                <Row>
+                    <Col><Form.Label>{gainLabel}</Form.Label></Col>
+                    <Col><Form.Control ref={inputGainRef} type="number" defaultValue={0} /></Col>
+                </Row>
+            </Form.Group>
+        </Row>
+        <Row>
+            <canvas ref={canvasRef} width={600} height={200} />
+        </Row>
     </div>
 }

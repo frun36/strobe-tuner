@@ -6,6 +6,8 @@ import Settings from "./components/Settings";
 import { dBToLinear } from "./utils/utils";
 import wheelImageUrl from "/wheel.png?url";
 
+import { Container, Row, Col } from "react-bootstrap";
+
 export default function App() {
     const [tunerNode, setAudioNode] = useState(null);
     const [inputGainNode, setInputGainNode] = useState(null);
@@ -68,16 +70,20 @@ export default function App() {
     }, [tunerNode]);
 
 
-    return <div style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-    }}>
+    return <>
         <img ref={imgRef} src={wheelImageUrl} style={{ display: "none" }} />
-        <h1>Strobe tuner</h1>
-        <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
-        <Settings updater={updateSettings} defaultSettings={defaultSettings} />
-        <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
-        <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
-    </div>
+        <Container fluid="sm">
+            <Row className="mx-auto">
+                <Col xs={0} lg={3}></Col>
+                <Col xs={12} lg={6}>
+                    <h1>Strobe tuner</h1>
+                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} />
+                    <Settings updater={updateSettings} defaultSettings={defaultSettings} />
+                    <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
+                    <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
+                </Col>
+                <Col xs={0} lg={3}></Col>
+            </Row>
+        </Container>
+    </>
 }
