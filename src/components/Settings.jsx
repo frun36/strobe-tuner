@@ -1,6 +1,7 @@
 import { useRef } from "react"
 
-import { Form, Row, Col } from "react-bootstrap";
+import { Form, Row, Col, Dropdown } from "react-bootstrap";
+import NotePicker from "./NotePicker";
 
 export default function Settings({ updater, defaultSettings }) {
     const inputGainRef = useRef(null);
@@ -26,6 +27,17 @@ export default function Settings({ updater, defaultSettings }) {
     }
 
     return <Form>
+        <Dropdown>
+            <Dropdown.Toggle>
+                Select mode
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+                <Dropdown.Item>Chromatic 12TET</Dropdown.Item>
+                <Dropdown.Item>Guitar Standard E</Dropdown.Item>
+                <Dropdown.Item>Custom</Dropdown.Item>
+            </Dropdown.Menu>
+        </Dropdown>
+        <NotePicker />
         <Form.Group>
             <Row>
                 <Col><Form.Label>Input gain (dB): </Form.Label></Col>
