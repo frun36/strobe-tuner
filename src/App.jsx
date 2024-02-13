@@ -15,6 +15,7 @@ export default function App() {
         filterOn: true,
         filterOctave: 4,
         filterQ: 8.,
+        noteName: "A",
     };
 
     const [tunerNode, setAudioNode] = useState(null);

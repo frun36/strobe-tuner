@@ -145,8 +145,6 @@ impl Tuner {
         filter_octave: usize,
         filter_q: f32,
     ) {
-        self.timestamp_ms = 0.;
-
         self.wheel.set_freq(wheel_frequency);
         self.wheel
             .set_full_rotation_angle(PI * 2.0_f32.powi(-(filter_octave as i32 - 1)));

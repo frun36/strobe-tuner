@@ -9,8 +9,12 @@ export default function NotePicker({ pitch, setTuningParams }) {
     const baseRef = useRef(null);
 
     const [notes, setNotes] = useState(
-        [{ name: "E", cents: -500, allowedOctaves: [2, 3, 4, 5], enabled: true },
-        { name: "A", cents: 0, allowedOctaves: [2, 3], enabled: true }]
+        [{ name: "E", cents: -500, allowedOctaves: [2, 3], enabled: true },
+        { name: "A", cents: 0, allowedOctaves: [2, 3], enabled: true },
+        { name: "D", cents: -700, allowedOctaves: [3, 4], enabled: true },
+        { name: "G", cents: -200, allowedOctaves: [3, 4], enabled: true },
+        { name: "B", cents: 200, allowedOctaves: [3, 4], enabled: true },
+        { name: "E", cents: -500, allowedOctaves: [4, 5], enabled: true }]
     );
 
     const updateNote = (index, updatedNote) => {
@@ -25,12 +29,12 @@ export default function NotePicker({ pitch, setTuningParams }) {
     };
 
     useEffect(() => {
-        const {pitch: inputPitch, octave} = intoFirstOctave(pitch);
+        const { pitch: inputPitch, octave } = intoFirstOctave(pitch);
         const base = intoFirstOctave(baseRef.current.value).pitch;
-        const inputCents = ratioToCents(inputPitch/base);
+        const inputCents = ratioToCents(inputPitch / base);
 
         let bestIndex = 0;
-        notes.forEach(({cents, enabled, allowedOctaves}, index) => {
+        notes.forEach(({ cents, enabled, allowedOctaves }, index) => {
             if (!(enabled && allowedOctaves.includes(octave))) {
                 return;
             }
@@ -46,9 +50,8 @@ export default function NotePicker({ pitch, setTuningParams }) {
             octave: octave,
             noteName: bestNote.name,
         })
-        
-    }, [notes, pitch, setTuningParams]);
 
+    }, [notes, pitch, setTuningParams]);
 
     useEffect(() => {
         console.log(notes);
@@ -62,15 +65,16 @@ export default function NotePicker({ pitch, setTuningParams }) {
                 <Col><Form.Text>Wheel base: {intoFirstOctave(baseRef.current ? baseRef.current.value : defaultBase).pitch} Hz</Form.Text></Col>
             </Row>
         </Form.Group>
-        <CardGroup>
-            {notes.map((note, index) =>
-                <NoteCard
-                    key={index}
-                    index={index}
-                    note={note}
-                    base={baseRef.current ? baseRef.current.value : defaultBase}
-                    updateNote={updateNote}
-                />)}
-        </CardGroup>
+        <Row>
+            {
+                notes.map((note, index) =>
+                    <Col key={index}><NoteCard
+                        key={index}
+                        index={index}
+                        note={note}
+                        base={baseRef.current ? baseRef.current.value : defaultBase}
+                        updateNote={updateNote} /></Col>)
+            }
+        </Row>
     </div>
 }

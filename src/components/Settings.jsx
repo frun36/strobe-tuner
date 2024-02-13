@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { Form, Row, Col, Dropdown } from "react-bootstrap";
 import NotePicker from "./NotePicker";
@@ -10,24 +10,28 @@ export default function Settings({ pitch, updater, defaultSettings }) {
     const filterOctaveRef = useRef(null);
     const filterQRef = useRef(null);
 
-    const changeHandler = () => {
-        const inputGainControl = inputGainRef.current;
-        const wheelFrequencyControl = wheelFrequencyRef.current;
-        const filterOnControl = filterOnRef.current;
-        const filterOctaveControl = filterOctaveRef.current;
-        const filterQControl = filterQRef.current;
+    const [tuningParams, setTuningParams] = useState({
+        wheelFrequency: defaultSettings.wheelFrequency,
+        octave: defaultSettings.filterOctave,
+        noteName: defaultSettings.noteName,
+    });
 
+    const changeHandler = () => {
         updater({
-            inputGain: inputGainControl.value,
-            wheelFrequency: wheelFrequencyControl.value,
-            filterOn: filterOnControl.checked,
-            filterOctave: filterOctaveControl.value,
-            filterQ: filterQControl.value,
+            inputGain: inputGainRef.current.value,
+            wheelFrequency: tuningParams.wheelFrequency,
+            filterOn: filterOnRef.current.checked,
+            filterOctave: tuningParams.octave,
+            filterQ: filterQRef.current.value,
         });
     }
 
+    useEffect(() => {
+        changeHandler();
+    }, [tuningParams]);
+
     return <Form>
-        <Dropdown>
+        {/* <Dropdown>
             <Dropdown.Toggle>
                 Select mode
             </Dropdown.Toggle>
@@ -36,8 +40,8 @@ export default function Settings({ pitch, updater, defaultSettings }) {
                 <Dropdown.Item>Guitar Standard E</Dropdown.Item>
                 <Dropdown.Item>Custom</Dropdown.Item>
             </Dropdown.Menu>
-        </Dropdown>
-        <NotePicker pitch={pitch} setTuningParams={(params) => { console.log(params); }} />
+        </Dropdown> */}
+        <NotePicker pitch={pitch} setTuningParams={setTuningParams} />
         <Form.Group>
             <Row>
                 <Col><Form.Label>Input gain (dB): </Form.Label></Col>
