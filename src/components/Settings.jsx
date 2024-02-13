@@ -3,7 +3,7 @@ import { useRef } from "react"
 import { Form, Row, Col, Dropdown } from "react-bootstrap";
 import NotePicker from "./NotePicker";
 
-export default function Settings({ updater, defaultSettings }) {
+export default function Settings({ pitch, updater, defaultSettings }) {
     const inputGainRef = useRef(null);
     const wheelFrequencyRef = useRef(null);
     const filterOnRef = useRef(null);
@@ -37,7 +37,7 @@ export default function Settings({ updater, defaultSettings }) {
                 <Dropdown.Item>Custom</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
-        <NotePicker />
+        <NotePicker pitch={pitch} setTuningParams={(params) => { console.log(params); }} />
         <Form.Group>
             <Row>
                 <Col><Form.Label>Input gain (dB): </Form.Label></Col>

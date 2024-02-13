@@ -84,7 +84,7 @@ export default function App() {
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>Frequency settings</Accordion.Header>
                             <Accordion.Body>
-                                <Settings updater={setCurrentSettings} defaultSettings={defaultSettings} />
+                                <Settings pitch={frame.pitch} updater={setCurrentSettings} defaultSettings={defaultSettings} />
                             </Accordion.Body>
                         </Accordion.Item>
                         <Accordion.Item eventKey="1">

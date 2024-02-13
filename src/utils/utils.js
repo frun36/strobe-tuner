@@ -11,6 +11,10 @@ export function ratioToCents(ratio) {
 }
 
 export function intoFirstOctave(pitch) {
+    if (pitch === 0.0) {
+        return { pitch: 0, octave: 0 };
+    }
+
     let octave = 1;
     while (pitch < 32) {
         pitch *= 2;
