@@ -5,9 +5,7 @@ import NotePicker from "./NotePicker";
 
 export default function Settings({ pitch, updater, defaultSettings }) {
     const inputGainRef = useRef(null);
-    const wheelFrequencyRef = useRef(null);
     const filterOnRef = useRef(null);
-    const filterOctaveRef = useRef(null);
     const filterQRef = useRef(null);
 
     const [tuningParams, setTuningParams] = useState({
@@ -51,34 +49,8 @@ export default function Settings({ pitch, updater, defaultSettings }) {
 
         <Form.Group>
             <Row>
-                <Col><Form.Label>Wheel frequency (Hz): </Form.Label></Col>
-                <Col><Form.Control ref={wheelFrequencyRef} type="number" min={0.0} step={0.01} defaultValue={defaultSettings.wheelFrequency} onChange={changeHandler} /></Col>
-            </Row>
-        </Form.Group>
-
-        <Form.Group>
-            <Row>
                 <Col><Form.Label>Enable bandpass filter</Form.Label></Col>
                 <Col><Form.Check ref={filterOnRef} type="switch" defaultChecked={defaultSettings.filterOn} onChange={changeHandler} /></Col>
-            </Row>
-        </Form.Group>
-
-        <Form.Group>
-            <Row>
-                <Col><Form.Label>Filter octave: </Form.Label></Col>
-                <Col><Form.Control ref={filterOctaveRef} type="number" min={1} defaultValue={defaultSettings.filterOctave} max={7} onChange={changeHandler} /></Col>
-            </Row>
-        </Form.Group>
-        <Form.Group>
-            <Row>
-                <Col><Form.Label>Filter frequency:  </Form.Label></Col>
-                <Col><Form.Text as="out">
-                    {
-                        (wheelFrequencyRef.current && filterOctaveRef.current ?
-                            (wheelFrequencyRef.current.value * Math.pow(2, filterOctaveRef.current.value - 1)).toFixed(2) :
-                            (defaultSettings.wheelFrequency * Math.pow(2, defaultSettings.filterOctave - 1)).toFixed(2)) + " Hz"
-                    }
-                </Form.Text></Col>
             </Row>
         </Form.Group>
 
