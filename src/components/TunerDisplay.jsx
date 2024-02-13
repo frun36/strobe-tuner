@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Row } from "react-bootstrap";
 import TunerHelper from "./TunerHelper";
 
-export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega, desiredPitch }) {
+export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega, desiredPitch, noteName }) {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
             <output id="apparentOmega">{(apparentOmega.toFixed(2))}</output>
         </Row> */}
         <Row>
-            <TunerHelper pitch={pitch} desiredPitch={desiredPitch} />
+            <TunerHelper pitch={pitch} desiredPitch={desiredPitch} noteName={noteName} />
         </Row>
     </div>
 }

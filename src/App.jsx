@@ -22,6 +22,9 @@ export default function App() {
     const [inputGainNode, setInputGainNode] = useState(null);
     const [currentSettings, setCurrentSettings] = useState(defaultSettings);
 
+    const [desiredPitch, setDesiredPitch] = useState(defaultSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1));
+    const [noteName, setNoteName] = useState(defaultSettings.noteName);
+
     const imgRef = useRef(null);
 
     const [frame, setFrame] = useState({
@@ -42,6 +45,8 @@ export default function App() {
         });
 
         inputGainNode && (inputGainNode.gain.value = dBToLinear(currentSettings.inputGain));
+        setDesiredPitch(currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1))
+        setNoteName(currentSettings.noteName);
     }, [currentSettings, tunerNode, inputGainNode]);
 
     useEffect(() => {
@@ -80,7 +85,7 @@ export default function App() {
                 <Col xs={0} lg={3}></Col>
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
-                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} desiredPitch={currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1)} />
+                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} desiredPitch={desiredPitch} noteName={noteName} />
                     <Accordion defaultActiveKey={["0"]} alwaysOpen>
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>Frequency settings</Accordion.Header>

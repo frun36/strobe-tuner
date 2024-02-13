@@ -21,6 +21,7 @@ export default function Settings({ pitch, updater, defaultSettings }) {
             filterOn: filterOnRef.current.checked,
             filterOctave: tuningParams.octave,
             filterQ: filterQRef.current.value,
+            noteName: tuningParams.noteName,
         });
     }
 
