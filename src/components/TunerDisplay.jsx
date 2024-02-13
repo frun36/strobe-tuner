@@ -29,21 +29,20 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
         });
     }, [positionBuffer, img])
 
-    return <div className="my-4 text-center">
-        <Row>
-            <canvas ref={canvasRef} width="400" height="200" style={{
-                borderRadius: "10px",
+    return <div>
+        <Row className="my-3">
+            <canvas ref={canvasRef} className="rounded" width="400" height="200" style={{
                 padding: "0px",
             }} />
         </Row>
-        <Row>
+        {/* <Row>
             <label htmlFor="inputFrequency">Pitch (Hz): </label>
             <output id="inputFrequency">{pitch.toFixed(2)}</output>
         </Row>
         <Row>
             <label htmlFor="apparentOmega">Apparent wheel angular velocity (wildly inaccurate): </label>
             <output id="apparentOmega">{(apparentOmega.toFixed(2))}</output>
-        </Row>
+        </Row> */}
         <Row>
             <TunerHelper pitch={pitch} desiredPitch={desiredPitch} />
         </Row>
