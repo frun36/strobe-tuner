@@ -1,6 +1,6 @@
 use crate::buffer::Buffer;
 
-use pitch_detection::detector::mcleod::McLeodDetector;
+use pitch_detection::detector::yin::YINDetector;
 use pitch_detection::detector::PitchDetector;
 
 pub struct Analyser {
@@ -8,7 +8,7 @@ pub struct Analyser {
     fft_size: usize,
     buffer: Buffer<f32>,
     last_pitch: Option<f32>,
-    pitch_detector: Option<McLeodDetector<f32>>,
+    pitch_detector: Option<YINDetector<f32>>,
     sample_counter: usize,
 }
 
@@ -20,7 +20,7 @@ impl Analyser {
             buffer: Buffer::new(fft_size),
             last_pitch: None,
             pitch_detector: if pitch_detector_enabled {
-                Some(McLeodDetector::new(fft_size, fft_size / 2))
+                Some(YINDetector::new(fft_size, fft_size / 2))
             } else {
                 None
             },
@@ -44,7 +44,7 @@ impl Analyser {
             .expect("Pitch detector uninitialised")
             .get_pitch(
                 self.buffer.get_contents_ordered(),
-                self.sample_rate as usize,
+                self.sample_rate.round() as usize,
                 0.0,
                 0.6,
             )
