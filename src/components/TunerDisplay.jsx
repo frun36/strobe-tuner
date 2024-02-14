@@ -5,6 +5,7 @@ import TunerHelper from "./TunerHelper";
 export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega, desiredPitch, noteName }) {
     const canvasRef = useRef(null);
 
+    // Update display frame
     useEffect(() => {
         let canvasCtx = canvasRef.current.getContext("2d");
 
@@ -35,14 +36,6 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
                 padding: "0px",
             }} />
         </Row>
-        {/* <Row>
-            <label htmlFor="inputFrequency">Pitch (Hz): </label>
-            <output id="inputFrequency">{pitch.toFixed(2)}</output>
-        </Row>
-        <Row>
-            <label htmlFor="apparentOmega">Apparent wheel angular velocity (wildly inaccurate): </label>
-            <output id="apparentOmega">{(apparentOmega.toFixed(2))}</output>
-        </Row> */}
         <Row>
             <TunerHelper pitch={pitch} desiredPitch={desiredPitch} noteName={noteName} />
         </Row>

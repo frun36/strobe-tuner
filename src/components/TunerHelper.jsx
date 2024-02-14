@@ -2,7 +2,7 @@ import { Row } from "react-bootstrap"
 import { ratioToCents } from "../utils/utils";
 
 export default function TunerHelper({ desiredPitch, pitch, noteName }) {
-    const getMessage = (desiredPitch, pitch) => {
+    const getNoteFeedback = (desiredPitch, pitch) => {
         const cents = ratioToCents(pitch / desiredPitch);
 
         if (Math.abs(cents) < 3) {
@@ -14,11 +14,11 @@ export default function TunerHelper({ desiredPitch, pitch, noteName }) {
         }
     };
 
-    const message = getMessage(desiredPitch, pitch);
+    const feedback = getNoteFeedback(desiredPitch, pitch);
 
-    const color = message == "ok" ? "text-success" : "text-danger";
+    const color = feedback == "ok" ? "text-success" : "text-danger";
     // const display = (message == "flat" ? "► " : "▻ ") + noteName + (message == "sharp" ? " ◄" : " ◅")
-    const display = (message == "flat" ? "▶ " : "▷ ") + noteName + (message == "sharp" ? " ◀" : " ◁")
+    const display = (feedback == "flat" ? "▶ " : "▷ ") + noteName + (feedback == "sharp" ? " ◀" : " ◁")
 
     return <Row className="mx-auto text-center">
         <p className={color + " rounded font-monospace"} style={{

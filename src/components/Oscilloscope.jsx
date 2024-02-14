@@ -7,6 +7,7 @@ export default function Oscilloscope({ buffer, gainLabel }) {
     const inputGainRef = useRef(null);
     const canvasRef = useRef(null);
 
+    // Handle updating buffer
     useEffect(() => {
         const canvasCtx = canvasRef.current.getContext("2d");
         const width = canvasRef.current.width;
@@ -39,10 +40,10 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         canvasCtx.stroke();
     }, [buffer]);
 
-    return <div className="my-2">
+    return <div className="my-3">
         <Row className="my-2">
             <Form.Group>
-                <Row>
+                <Row className="align-items-center">
                     <Col><Form.Label>{gainLabel}</Form.Label></Col>
                     <Col><Form.Control ref={inputGainRef} type="number" defaultValue={0} /></Col>
                 </Row>

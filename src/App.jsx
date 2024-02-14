@@ -9,24 +9,12 @@ import wheelImageUrl from "/wheel.png?url";
 import { Container, Row, Col, Accordion } from "react-bootstrap";
 
 export default function App() {
-    const defaultSettings = {
-        inputGain: 0,
-        wheelFrequency: 55.00,
-        filterOn: true,
-        filterOctave: 4,
-        filterQ: 8.,
-        noteName: "A",
-    };
-
+    // WebAudio state
     const [tunerNode, setAudioNode] = useState(null);
     const [inputGainNode, setInputGainNode] = useState(null);
-    const [currentSettings, setCurrentSettings] = useState(defaultSettings);
 
-    const [desiredPitch, setDesiredPitch] = useState(defaultSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1));
-    const [noteName, setNoteName] = useState(defaultSettings.noteName);
-
+    // Rendering state
     const imgRef = useRef(null);
-
     const [frame, setFrame] = useState({
         inputBuffer: [],
         outputBuffer: [],
@@ -35,20 +23,7 @@ export default function App() {
         apparentOmega: 0.,
     });
 
-    useEffect(() => {
-        tunerNode && tunerNode.port.postMessage({
-            type: "update-settings",
-            wheelFrequency: currentSettings.wheelFrequency,
-            filterOn: currentSettings.filterOn,
-            filterOctave: currentSettings.filterOctave,
-            filterQ: currentSettings.filterQ,
-        });
-
-        inputGainNode && (inputGainNode.gain.value = dBToLinear(currentSettings.inputGain));
-        setDesiredPitch(currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1))
-        setNoteName(currentSettings.noteName);
-    }, [currentSettings, tunerNode, inputGainNode]);
-
+    // Setup WebAudio and tunerNode-UI connection
     useEffect(() => {
         const awaitSetupAudio = async () => {
             const { tunerNode, inputGainNode } = await setupAudio();
@@ -68,6 +43,36 @@ export default function App() {
         awaitSetupAudio();
     }, [])
 
+    // General settings and tuning parameters
+    const defaultSettings = {
+        inputGain: 0,
+        wheelFrequency: 55.00,
+        filterOn: true,
+        filterOctave: 4,
+        filterQ: 8.,
+        noteName: "A",
+    };
+    const [currentSettings, setCurrentSettings] = useState(defaultSettings);
+
+    const [desiredPitch, setDesiredPitch] = useState(defaultSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1));
+    const [noteName, setNoteName] = useState(defaultSettings.noteName);
+
+    // Update settings and note params
+    useEffect(() => {
+        tunerNode && tunerNode.port.postMessage({
+            type: "update-settings",
+            wheelFrequency: currentSettings.wheelFrequency,
+            filterOn: currentSettings.filterOn,
+            filterOctave: currentSettings.filterOctave,
+            filterQ: currentSettings.filterQ,
+        });
+
+        inputGainNode && (inputGainNode.gain.value = dBToLinear(currentSettings.inputGain));
+        setDesiredPitch(currentSettings.wheelFrequency * Math.pow(2, currentSettings.filterOctave - 1))
+        setNoteName(currentSettings.noteName);
+    }, [currentSettings, tunerNode, inputGainNode]);
+
+    // Animation loop
     useEffect(() => {
         function step() {
             tunerNode && tunerNode.port.postMessage({ type: "get-frame" });
@@ -80,15 +85,23 @@ export default function App() {
 
     return <>
         <img ref={imgRef} src={wheelImageUrl} style={{ display: "none" }} />
+
         <Container fluid="sm">
             <Row className="mx-auto">
                 <Col xs={0} lg={3}></Col>
+
                 <Col xs={12} lg={6}>
                     <h1>Strobe tuner</h1>
-                    <TunerDisplay img={imgRef.current} positionBuffer={frame.positionBuffer} pitch={frame.pitch} apparentOmega={frame.apparentOmega} desiredPitch={desiredPitch} noteName={noteName} />
+                    <TunerDisplay img={imgRef.current}
+                        positionBuffer={frame.positionBuffer}
+                        pitch={frame.pitch}
+                        apparentOmega={frame.apparentOmega}
+                        desiredPitch={desiredPitch}
+                        noteName={noteName} />
+                    
                     <Accordion defaultActiveKey={["0"]} alwaysOpen>
                         <Accordion.Item eventKey="0">
-                            <Accordion.Header>Frequency settings</Accordion.Header>
+                            <Accordion.Header>Settings</Accordion.Header>
                             <Accordion.Body>
                                 <Settings pitch={frame.pitch} updater={setCurrentSettings} defaultSettings={defaultSettings} />
                             </Accordion.Body>
@@ -102,6 +115,7 @@ export default function App() {
                         </Accordion.Item>
                     </Accordion>
                 </Col>
+                
                 <Col xs={0} lg={3}></Col>
             </Row>
         </Container>

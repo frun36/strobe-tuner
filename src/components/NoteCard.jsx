@@ -7,7 +7,12 @@ export default function NoteCard({ index, base, note, updateNote }) {
     const centsRef = useRef(null);
     const enabledRef = useRef(null);
 
-    const updateOctaves = (octave, prevOctaves) => {
+    const getWheelFrequencyFromCents = (base, cents) => {
+        return intoFirstOctave(base).pitch *
+            centsToRatio(cents);
+    }
+    
+    const getUpdatedOctaveList = (octave, prevOctaves) => {
         if (octave === 0) {
             return prevOctaves;
         }
@@ -25,19 +30,14 @@ export default function NoteCard({ index, base, note, updateNote }) {
                 name: nameRef.current.value,
                 cents: centsRef.current.value,
                 enabled: enabledRef.current.checked,
-                allowedOctaves: updateOctaves(octave, note.allowedOctaves),
+                allowedOctaves: getUpdatedOctaveList(octave, note.allowedOctaves),
             }
         );
     }
 
-    const getWheelFrequencyFromCents = (base, cents) => {
-        return intoFirstOctave(base).pitch *
-            centsToRatio(cents);
-    }
-
-    return <Card>
+    return <Card className="my-1">
         <Card.Header>
-            <Row>
+            <Row className="align-items-center">
                 <Col xs={4}>
                     <Form.Control ref={nameRef} type="text" defaultValue={note.name} onChange={() => handleNoteChange(0)} />
                 </Col>
@@ -46,12 +46,14 @@ export default function NoteCard({ index, base, note, updateNote }) {
                 </Col>
             </Row>
         </Card.Header>
+
         <Card.Body>
-            <Row>
-                <Col><Form.Label>Cents:</Form.Label></Col>
+            <Row className="align-items-center">
+                <Col xs="4"><Form.Label>Cents:</Form.Label></Col>
                 <Col><Form.Control ref={centsRef} type="number" defaultValue={note.cents} step={0.1} min={-1200} max={1200} onChange={() => handleNoteChange(0)}></Form.Control></Col>
             </Row>
-            <Row>
+
+            <Row className="my-2">
                 <Dropdown>
                     <Dropdown.Toggle variant="secondary">Allowed octaves</Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -69,6 +71,7 @@ export default function NoteCard({ index, base, note, updateNote }) {
                     </Dropdown.Menu>
                 </Dropdown>
             </Row>
+            
             <Row>
                 <Form.Text>Wheel: {(centsRef.current ? getWheelFrequencyFromCents(base, centsRef.current.value) : base).toFixed(4)} Hz</Form.Text>
             </Row>
