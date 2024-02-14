@@ -21,7 +21,7 @@ export default function Settings({ pitch, updater, defaultSettings }) {
         updater({
             inputGain: parseFloat(inputGainRef.current.value),
             wheelFrequency: tuningParams.wheelFrequency,
-            filterOn: parseFloat(filterOnRef.current.checked),
+            filterOn: filterOnRef.current.checked,
             filterOctave: tuningParams.octave,
             filterQ: parseFloat(filterQRef.current.value),
             noteName: tuningParams.noteName,
