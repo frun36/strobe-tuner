@@ -33,29 +33,25 @@ export default function NotePicker({ pitch, setTuningParams }) {
         const base = intoFirstOctave(baseRef.current.value).pitch;
         const inputCents = ratioToCents(inputPitch / base);
 
-        let bestIndex = 0;
-        notes.forEach(({ cents, enabled, allowedOctaves }, index) => {
-            if (!(enabled && allowedOctaves.includes(octave))) {
-                return;
-            }
-            if (Math.abs(cents - inputCents) < Math.abs(notes[bestIndex].cents - inputCents)) {
-                bestIndex = index;
+        const allowedNotes = notes.filter(({enabled, allowedOctaves}) => enabled && allowedOctaves.includes(octave));
+        
+        if(!allowedNotes.length) {
+            return;
+        }
+
+        let bestNote = allowedNotes[0];
+        allowedNotes.forEach((note, index) => {
+            if (Math.abs(note.cents - inputCents) < Math.abs(bestNote.cents - inputCents)) {
+                bestNote = allowedNotes[index];
             }
         });
-
-        const bestNote = notes[bestIndex];
 
         setTuningParams({
             wheelFrequency: centsToRatio(bestNote.cents) * base,
             octave: octave,
             noteName: bestNote.name,
-        })
-
+        });
     }, [notes, pitch, setTuningParams]);
-
-    useEffect(() => {
-        console.log(notes);
-    }, [notes]);
 
     return <div>
         <Form.Group>
