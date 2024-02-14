@@ -30,11 +30,9 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
         });
     }, [positionBuffer, img])
 
-    return <div>
-        <Row className="my-3">
-            <canvas ref={canvasRef} className="rounded" width="400" height="200" style={{
-                padding: "0px",
-            }} />
+    return <div className="mx-3">
+        <Row className="my-1">
+            <canvas ref={canvasRef} className="p-0 rounded" width="400" height="200" />
         </Row>
         <Row>
             <TunerHelper pitch={pitch} desiredPitch={desiredPitch} noteName={noteName} />

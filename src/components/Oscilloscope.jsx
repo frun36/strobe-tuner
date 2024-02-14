@@ -40,7 +40,7 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         canvasCtx.stroke();
     }, [buffer]);
 
-    return <div className="my-3">
+    return <div className="my-0 p-1">
         <Row className="my-2">
             <Form.Group>
                 <Row className="align-items-center">
@@ -50,9 +50,7 @@ export default function Oscilloscope({ buffer, gainLabel }) {
             </Form.Group>
         </Row>
         <Row>
-            <canvas ref={canvasRef} width={600} height={200} style={{
-                padding: "0px",
-            }} />
+            <canvas ref={canvasRef} width={600} height={200} />
         </Row>
     </div>
 }

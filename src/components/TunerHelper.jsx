@@ -20,7 +20,7 @@ export default function TunerHelper({ desiredPitch, pitch, noteName }) {
     // const display = (message == "flat" ? "► " : "▻ ") + noteName + (message == "sharp" ? " ◄" : " ◅")
     const display = (feedback == "flat" ? "▶ " : "▷ ") + noteName + (feedback == "sharp" ? " ◀" : " ◁")
 
-    return <Row className="mx-auto text-center">
+    return <Row className="mx-auto text-center p-0">
         <p className={color + " rounded font-monospace"} style={{
             fontSize: 64,
             backgroundColor: "#000000",

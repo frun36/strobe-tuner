@@ -1,4 +1,4 @@
-import { Form, Row, Col, Dropdown } from "react-bootstrap";
+import { Form, Row, Col, Dropdown, CardGroup } from "react-bootstrap";
 import NoteCard from "./NoteCard";
 import { useEffect, useRef, useReducer } from "react";
 import { centsToRatio, intoFirstOctave, ratioToCents } from "../utils/utils";
@@ -59,9 +59,9 @@ export default function NotePicker({ pitch, setTuningParams }) {
         });
     }, [tuning, pitch, setTuningParams]);
 
-    return <div>
+    return <div className="p-3">
         <Dropdown>
-            <Dropdown.Toggle>
+            <Dropdown.Toggle className="py-1">
                 Select mode
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -89,11 +89,11 @@ export default function NotePicker({ pitch, setTuningParams }) {
             </Row>
         </Form.Group>
 
-        <Row>
+        <Row xs={3} sm={4} xxl={6}>
             {
                 // Note cards
                 tuning.notes.map((note, index) =>
-                    <Col key={index}>
+                    <Col key={index} className="p-0">
                         <NoteCard
                             key={tuning.id + index}
                             index={index}
@@ -104,7 +104,8 @@ export default function NotePicker({ pitch, setTuningParams }) {
                                 index: index,
                                 updatedNote: updatedNote
                             })} />
-                    </Col>)
+                    </Col>
+                )
             }
         </Row>
     </div>

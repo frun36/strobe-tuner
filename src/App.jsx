@@ -83,41 +83,38 @@ export default function App() {
     }, [tunerNode]);
 
 
-    return <>
+    return <Container fluid="sm" className="p-1">
         <img ref={imgRef} src={wheelImageUrl} style={{ display: "none" }} />
+        <Row className="mx-auto">
+            <Col xs={0} lg={3}></Col>
 
-        <Container fluid="sm">
-            <Row className="mx-auto">
-                <Col xs={0} lg={3}></Col>
+            <Col xs={12} lg={6} className="mx-0 p-0">
+                <h1>Strobe tuner</h1>
+                <TunerDisplay img={imgRef.current}
+                    positionBuffer={frame.positionBuffer}
+                    pitch={frame.pitch}
+                    apparentOmega={frame.apparentOmega}
+                    desiredPitch={desiredPitch}
+                    noteName={noteName} />
 
-                <Col xs={12} lg={6}>
-                    <h1>Strobe tuner</h1>
-                    <TunerDisplay img={imgRef.current}
-                        positionBuffer={frame.positionBuffer}
-                        pitch={frame.pitch}
-                        apparentOmega={frame.apparentOmega}
-                        desiredPitch={desiredPitch}
-                        noteName={noteName} />
-                    
-                    <Accordion defaultActiveKey={["0"]} alwaysOpen>
-                        <Accordion.Item eventKey="0">
-                            <Accordion.Header>Settings</Accordion.Header>
-                            <Accordion.Body>
-                                <Settings pitch={frame.pitch} updater={setCurrentSettings} defaultSettings={defaultSettings} />
-                            </Accordion.Body>
-                        </Accordion.Item>
-                        <Accordion.Item eventKey="1">
-                            <Accordion.Header>Signal analysis</Accordion.Header>
-                            <Accordion.Body>
-                                <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
-                                <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
-                </Col>
-                
-                <Col xs={0} lg={3}></Col>
-            </Row>
-        </Container>
-    </>
+                <Accordion defaultActiveKey={["0"]} alwaysOpen>
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header>Settings</Accordion.Header>
+                        <Accordion.Body className="p-0">
+                            <Settings pitch={frame.pitch} updater={setCurrentSettings} defaultSettings={defaultSettings} />
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey="1">
+                        <Accordion.Header>Signal analysis</Accordion.Header>
+                        <Accordion.Body className="p-0">
+                            <Oscilloscope buffer={frame.inputBuffer} gainLabel="Input oscilloscope gain: " />
+                            <Oscilloscope buffer={frame.outputBuffer} gainLabel="Output oscilloscope gain: " />
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+            </Col>
+
+            <Col xs={0} lg={3}></Col>
+        </Row>
+    </Container>
 }
