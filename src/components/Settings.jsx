@@ -19,11 +19,11 @@ export default function Settings({ pitch, updater, defaultSettings }) {
     // Handling changed settings
     const changeHandler = () => {
         updater({
-            inputGain: inputGainRef.current.value,
+            inputGain: parseFloat(inputGainRef.current.value),
             wheelFrequency: tuningParams.wheelFrequency,
-            filterOn: filterOnRef.current.checked,
+            filterOn: parseFloat(filterOnRef.current.checked),
             filterOctave: tuningParams.octave,
-            filterQ: filterQRef.current.value,
+            filterQ: parseFloat(filterQRef.current.value),
             noteName: tuningParams.noteName,
         });
     }

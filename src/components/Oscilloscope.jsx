@@ -12,7 +12,7 @@ export default function Oscilloscope({ buffer, gainLabel }) {
         const canvasCtx = canvasRef.current.getContext("2d");
         const width = canvasRef.current.width;
         const height = canvasRef.current.height;
-        const gain = dBToLinear(inputGainRef.current.value);
+        const gain = dBToLinear(parseFloat(inputGainRef.current.value));
 
         // Draw
         canvasCtx.fillStyle = "rgb(0, 0, 0)";

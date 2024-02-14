@@ -11,7 +11,7 @@ export default function NoteCard({ index, base, note, updateNote }) {
         return intoFirstOctave(base).pitch *
             centsToRatio(cents);
     }
-    
+
     const getUpdatedOctaveList = (octave, prevOctaves) => {
         if (octave === 0) {
             return prevOctaves;
@@ -28,9 +28,9 @@ export default function NoteCard({ index, base, note, updateNote }) {
             index,
             {
                 name: nameRef.current.value,
-                cents: centsRef.current.value,
-                enabled: enabledRef.current.checked,
+                cents: parseFloat(centsRef.current.value),
                 allowedOctaves: getUpdatedOctaveList(octave, note.allowedOctaves),
+                enabled: enabledRef.current.checked,
             }
         );
     }
@@ -38,7 +38,7 @@ export default function NoteCard({ index, base, note, updateNote }) {
     return <Card className="my-1">
         <Card.Header>
             <Row className="align-items-center">
-                <Col xs={4}>
+                <Col xs={6}>
                     <Form.Control ref={nameRef} type="text" defaultValue={note.name} onChange={() => handleNoteChange(0)} />
                 </Col>
                 <Col className="d-flex justify-content-end">
@@ -61,19 +61,21 @@ export default function NoteCard({ index, base, note, updateNote }) {
                             <Dropdown.Item
                                 key={octave - 1}
                                 onClick={() => handleNoteChange(octave)}
-                            ><input
+                            >
+                                <Form.Check
                                     type="checkbox"
                                     checked={note.allowedOctaves.includes(octave)}
                                     readOnly
+                                    label={" " + octave}
                                 />
-                                {" " + octave}</Dropdown.Item>
+                            </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
             </Row>
-            
+
             <Row>
-                <Form.Text>Wheel: {(centsRef.current ? getWheelFrequencyFromCents(base, centsRef.current.value) : base).toFixed(4)} Hz</Form.Text>
+                <Form.Text>Wheel: {(centsRef.current ? getWheelFrequencyFromCents(base, centsRef.current.value) : intoFirstOctave(base).pitch).toFixed(4)} Hz</Form.Text>
             </Row>
         </Card.Body>
     </Card>

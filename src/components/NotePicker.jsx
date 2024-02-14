@@ -1,32 +1,37 @@
-import { Form, Row, Col } from "react-bootstrap";
+import { Form, Row, Col, Dropdown } from "react-bootstrap";
 import NoteCard from "./NoteCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import { centsToRatio, intoFirstOctave, ratioToCents } from "../utils/utils";
+import { tunings } from "../utils/tunings";
 
 const defaultBase = 440.0;
 
 export default function NotePicker({ pitch, setTuningParams }) {
     const baseFrequencyRef = useRef(null);
 
-    const [notes, setNotes] = useState(
-        [{ name: "E", cents: -500, allowedOctaves: [2, 3], enabled: true },
-        { name: "A", cents: 0, allowedOctaves: [2, 3], enabled: true },
-        { name: "D", cents: -700, allowedOctaves: [3, 4], enabled: true },
-        { name: "G", cents: -200, allowedOctaves: [3, 4], enabled: true },
-        { name: "B", cents: 200, allowedOctaves: [3, 4], enabled: true },
-        { name: "E", cents: -500, allowedOctaves: [4, 5], enabled: true }]
-    );
-
-    const updateNoteSettings = (index, updatedNote) => {
-        setNotes((prevNotes) => {
-            return prevNotes.map((note, i) => {
-                if (i === index) {
-                    return updatedNote;
+    const notesReducer = (state, action) => {
+        switch (action.type) {
+            case "update-note":
+                return {
+                    id: state.id, notes: state.notes.map((note, i) => {
+                        if (i === action.index) {
+                            return action.updatedNote;
+                        }
+                        return note;
+                    })
                 }
-                return note;
-            });
-        });
-    };
+            case "change-tuning":
+                return {id: action.tuningID, notes: action.notes};
+            default:
+                return state;
+        }
+    }
+
+    const [tuning, tuningDispatch] = useReducer(notesReducer, { id: 0, notes: tunings[0].notes });
+
+    useEffect(() => {
+        console.log("Notes updated:", tuning);
+    }, [tuning]);
 
     // Detect which note is being played and set the tuning parameters accordingly
     useEffect(() => {
@@ -34,9 +39,9 @@ export default function NotePicker({ pitch, setTuningParams }) {
         const baseFrequency = intoFirstOctave(baseFrequencyRef.current.value).pitch;
         const inputCents = ratioToCents(inputPitch / baseFrequency);
 
-        const allowedNotes = notes.filter(({enabled, allowedOctaves}) => enabled && allowedOctaves.includes(octave));
-        
-        if(!allowedNotes.length) {
+        const allowedNotes = tuning.notes.filter(({ enabled, allowedOctaves }) => enabled && allowedOctaves.includes(octave));
+
+        if (!allowedNotes.length) {
             return;
         }
 
@@ -52,18 +57,24 @@ export default function NotePicker({ pitch, setTuningParams }) {
             octave: octave,
             noteName: bestNote.name,
         });
-    }, [notes, pitch, setTuningParams]);
+    }, [tuning, pitch, setTuningParams]);
 
-    return <div>{/* <Dropdown>
-    <Dropdown.Toggle>
-        Select mode
-    </Dropdown.Toggle>
-    <Dropdown.Menu>
-        <Dropdown.Item>Chromatic 12TET</Dropdown.Item>
-        <Dropdown.Item>Guitar Standard E</Dropdown.Item>
-        <Dropdown.Item>Custom</Dropdown.Item>
-    </Dropdown.Menu>
-</Dropdown> */}
+    return <div>
+        <Dropdown>
+            <Dropdown.Toggle>
+                Select mode
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+                {tunings.map((tuning, index) =>
+                    <Dropdown.Item key={index} onClick={() => {
+                        tuningDispatch({ type: "change-tuning", notes: tuning.notes, tuningID: 100 * index })
+                    }}>
+                        {tuning.name}
+                    </Dropdown.Item>
+                )}
+            </Dropdown.Menu>
+        </Dropdown>
+
         <Form.Group>
             <Row className="align-items-center my-2">
                 <Col xs={1}>
@@ -81,13 +92,19 @@ export default function NotePicker({ pitch, setTuningParams }) {
         <Row>
             {
                 // Note cards
-                notes.map((note, index) =>
-                    <Col key={index}><NoteCard
-                        key={index}
-                        index={index}
-                        note={note}
-                        base={baseFrequencyRef.current ? baseFrequencyRef.current.value : defaultBase}
-                        updateNote={updateNoteSettings} /></Col>)
+                tuning.notes.map((note, index) =>
+                    <Col key={index}>
+                        <NoteCard
+                            key={tuning.id + index}
+                            index={index}
+                            note={note}
+                            base={baseFrequencyRef.current ? parseFloat(baseFrequencyRef.current.value) : defaultBase}
+                            updateNote={(index, updatedNote) => tuningDispatch({
+                                type: "update-note",
+                                index: index,
+                                updatedNote: updatedNote
+                            })} />
+                    </Col>)
             }
         </Row>
     </div>
