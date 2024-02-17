@@ -50,7 +50,7 @@ export default function NoteCard({ index, base, note, updateNote }) {
         <Card.Body className="p-1">
             <Row className="align-items-center">
                 <Col xs="1"><Form.Label>¢</Form.Label></Col>
-                <Col><Form.Control ref={centsRef} className="p-1" type="number" defaultValue={note.cents} step={0.1} min={-1200} max={1200} onChange={() => handleNoteChange(0)}></Form.Control></Col>
+                <Col><Form.Control ref={centsRef} className="p-1" type="number" defaultValue={note.cents.toFixed(1)} step={0.1} min={-1200} max={1200} onChange={() => handleNoteChange(0)}></Form.Control></Col>
             </Row>
 
             <Row className="my-1">

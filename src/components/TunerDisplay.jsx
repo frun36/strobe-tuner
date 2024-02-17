@@ -26,7 +26,7 @@ export default function TunerDisplay({ img, positionBuffer, pitch, apparentOmega
 
         setBacklight(1);
         positionBuffer.forEach(position => {
-            drawWheel(-position, 0.06);
+            drawWheel(-position, 0.03);
         });
     }, [positionBuffer, img])
 
