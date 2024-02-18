@@ -1,7 +1,7 @@
 import { ratioToCents } from "./utils.js";
 
 const noteNamesSharp = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
-const noteNamesFlat = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"];
+// const noteNamesFlat = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"];
 
 function createNote(name, cents, allowedOctaves) {
     return {
@@ -57,6 +57,15 @@ const tuning6GuitJT = {
     ]
 };
 
+const tuningUke = {
+    name: "Soprano ukulele", notes: [
+        { name: "G", cents: -200, allowedOctaves: [4, 5], enabled: true },
+        { name: "C", cents: -900, allowedOctaves: [4, 5], enabled: true },
+        { name: "E", cents: -500, allowedOctaves: [4, 5], enabled: true },
+        { name: "A", cents: 0, allowedOctaves: [4, 5], enabled: true },
+    ]
+}
+
 const tuningViolin = {
     name: "Violin", notes: [
         { name: "G", cents: ratioToCents((2 / 3) * (2 / 3) * 2), allowedOctaves: [3, 4], enabled: true },
@@ -86,6 +95,7 @@ export const tunings = [
     tuning6GuitStd,
     tuning6GuitEb,
     tuning6GuitJT,
+    tuningUke,
     tuningViolin,
     tuningViola,
     tuningSingle,
